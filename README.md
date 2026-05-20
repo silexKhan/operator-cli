@@ -59,6 +59,20 @@ pip install -e .
 `-t` 또는 `--thinking` 옵션을 통해 모델의 사고 깊이를 조절할 수 있습니다:
 - `minimal`, `low`, `medium`, `high`, `xhigh`
 
+## 🧩 확장성 및 하네싱 (Extensibility & Harnessing)
+
+Operator CLI는 규약(Protocol) 기반의 확장을 통해 특정 프로젝트나 기술 스택에 맞게 AI를 최적화할 수 있습니다.
+
+### 1. 회선(Circuit) 추가
+`protocols/circuits/` 디렉토리에 새로운 마크다운 파일을 추가하여 새로운 프로젝트 환경을 정의하십시오.
+- 예: `my-project.md` 추가 시 `operator call my-project`로 연결 가능.
+
+### 2. 유닛(Unit) 추가
+`protocols/units/` 디렉토리에 특정 기술 스택이나 도메인 지침을 추가하십시오.
+- 예: `react-ts.md`, `cloud-native.md` 등을 추가하여 AI에게 전문 지식을 주입(Harnessing)할 수 있습니다.
+
+이러한 구조를 통해 복잡한 비즈니스 로직이나 엄격한 코딩 컨벤션이 필요한 환경에서도 AI 에이전트를 강력하게 제어할 수 있습니다.
+
 ## 🏗 빌드 (Build)
 
 ### macOS (맥 터미널)

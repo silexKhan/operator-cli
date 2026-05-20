@@ -28,12 +28,12 @@ jobs:
         run: python scripts/generate_guide.py
 
       - name: Build with PyInstaller
-        run: pyinstaller --clean --onedir --name operator_bin src/operator_cli/main.py
+        run: pyinstaller --clean --onefile --name operator_bin src/operator_cli/main.py
 
       - name: Package for macOS
         run: |
           mkdir -p release/mac
-          mv dist/operator_bin/* release/mac/
+          mv dist/operator_bin release/mac/
           cp -r protocols release/mac/
           cp docs/AGENT_GUIDE.md release/mac/
           cd release && zip -r ../operator_mac.zip mac/
@@ -66,12 +66,12 @@ jobs:
         run: python scripts/generate_guide.py
 
       - name: Build with PyInstaller
-        run: pyinstaller --clean --onedir --name operator_bin src/operator_cli/main.py
+        run: pyinstaller --clean --onefile --name operator_bin src/operator_cli/main.py
 
       - name: Package for Windows
         run: |
           mkdir release\win
-          move dist\operator_bin\* release\win\
+          move dist\operator_bin.exe release\win\
           xcopy /E /I protocols release\win\protocols
           copy docs\AGENT_GUIDE.md release\win\
           powershell Compress-Archive -Path release\win\* -DestinationPath operator_win.zip

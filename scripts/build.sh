@@ -30,21 +30,20 @@ pip install -q pyinstaller
 echo "📝 [3/5] AI 에이전트 가이드(AGENT_GUIDE.md) 생성 중..."
 python3 scripts/generate_guide.py
 
-echo "🔨 [4/5] PyInstaller를 사용하여 바이너리 빌드 중 (onedir 모드)..."
+echo "🔨 [4/5] PyInstaller를 사용하여 바이너리 빌드 중 (onefile 모드)..."
 rm -rf dist/ build/
-pyinstaller --clean --onedir --name operator_bin src/operator_cli/main.py
+pyinstaller --clean --onefile --name operator_bin src/operator_cli/main.py
 
 echo "📦 [5/5] 배포 패키지 구성 중 (Platform: macOS)..."
 # 플랫폼별 폴더 구조 생성
-mkdir -p dist/mac
+mkdir -p release/mac
 
 # 빌드 결과물 이동
-mv dist/operator_bin/* dist/mac/
-rmdir dist/operator_bin
+mv dist/operator_bin release/mac/
 
 # 에셋 복사 (protocols 및 가이드)
-cp -r protocols dist/mac/
-cp docs/AGENT_GUIDE.md dist/mac/
+cp -r protocols release/mac/
+cp docs/AGENT_GUIDE.md release/mac/
 
 echo "✅ 빌드 및 패키징 완료!"
 echo "------------------------------------------------"

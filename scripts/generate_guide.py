@@ -60,7 +60,7 @@ def generate_guide(output_path: Path):
     )
     
     output_path.write_text(formatted_guide, encoding="utf-8")
-    print(f"✓ AGENT_GUIDE.md generated at {output_path}")
+    print(f"SUCCESS: AGENT_GUIDE.md generated at {output_path}")
 
 if __name__ == "__main__":
     PROJECT_ROOT = Path(__file__).parent.parent

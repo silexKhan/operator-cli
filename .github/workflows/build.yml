@@ -69,13 +69,13 @@ jobs:
         run: pyinstaller --clean --onefile --name operator src/operator_cli/main.py
 
       - name: Package for Windows
-        shell: bash
         run: |
           mkdir -p release/operator_win
           cp dist/operator.exe release/operator_win/
           cp -r protocols release/operator_win/
           cp docs/AGENT_GUIDE.md release/operator_win/
-          cd release && zip -r ../operator_win.zip operator_win/
+          python -c "import shutil; shutil.make_archive('operator_win', 'zip', 'release', 'operator_win')"
+        shell: bash
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4

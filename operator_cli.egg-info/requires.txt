@@ -1,0 +1,4 @@
+typer[all]
+rich
+ollama
+pydantic-settings

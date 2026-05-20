@@ -28,15 +28,15 @@ jobs:
         run: python scripts/generate_guide.py
 
       - name: Build with PyInstaller
-        run: pyinstaller --clean --onefile --name operator_bin src/operator_cli/main.py
+        run: pyinstaller --clean --onefile --name operator src/operator_cli/main.py
 
       - name: Package for macOS
         run: |
-          mkdir -p release/mac
-          mv dist/operator_bin release/mac/
-          cp -r protocols release/mac/
-          cp docs/AGENT_GUIDE.md release/mac/
-          cd release && zip -r ../operator_mac.zip mac/
+          mkdir -p release/operator_mac
+          mv dist/operator release/operator_mac/
+          cp -r protocols release/operator_mac/
+          cp docs/AGENT_GUIDE.md release/operator_mac/
+          cd release && zip -r ../operator_mac.zip operator_mac/
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
@@ -66,15 +66,16 @@ jobs:
         run: python scripts/generate_guide.py
 
       - name: Build with PyInstaller
-        run: pyinstaller --clean --onefile --name operator_bin src/operator_cli/main.py
+        run: pyinstaller --clean --onefile --name operator src/operator_cli/main.py
 
       - name: Package for Windows
+        shell: bash
         run: |
-          mkdir release\win
-          move dist\operator_bin.exe release\win\
-          xcopy /E /I protocols release\win\protocols
-          copy docs\AGENT_GUIDE.md release\win\
-          powershell Compress-Archive -Path release\win\* -DestinationPath operator_win.zip
+          mkdir -p release/operator_win
+          cp dist/operator.exe release/operator_win/
+          cp -r protocols release/operator_win/
+          cp docs/AGENT_GUIDE.md release/operator_win/
+          cd release && zip -r ../operator_win.zip operator_win/
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4

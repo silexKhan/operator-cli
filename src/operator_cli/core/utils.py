@@ -3,7 +3,15 @@ from pathlib import Path
 from typing import List, Dict, Any
 
 def get_project_root() -> Path:
-    """바이너리/스크립트 환경을 모두 지원하는 프로젝트 루트 경로 반환"""
+    """
+    프로젝트 루트 경로를 결정합니다.
+    1. 현재 작업 디렉토리(CWD)에 'protocols' 또는 'knowledge'가 있으면 CWD를 반환 (로컬 프로젝트 모드)
+    2. 그렇지 않으면 바이너리/스크립트 설치 위치를 반환 (글로벌 모드)
+    """
+    cwd = Path.cwd()
+    if (cwd / "protocols").exists() or (cwd / "knowledge").exists():
+        return cwd
+        
     if getattr(sys, 'frozen', False):
         return Path(sys.executable).parent
     else:
@@ -11,7 +19,13 @@ def get_project_root() -> Path:
         return Path(__file__).parent.parent.parent.parent
 
 def get_protocols_dir() -> Path:
-    """프로토콜 저장소 디렉토리 경로 반환"""
+    """프로토콜 저장소 디렉토리 경로 반환 (로컬 우선)"""
+    # 1. CWD/protocols 체크
+    cwd_proto = Path.cwd() / "protocols"
+    if cwd_proto.exists() and cwd_proto.is_dir():
+        return cwd_proto
+        
+    # 2. 설치 경로 기반 protocols 반환
     return get_project_root() / "protocols"
 
 def get_engine():

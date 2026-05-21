@@ -20,7 +20,7 @@ app = typer.Typer(
 )
 
 # 명령어 모듈 로드
-from operator_cli.commands.ops import run, agent, summarize
+from operator_cli.commands.ops import run, agent, summarize, knowledge
 from operator_cli.commands.info import status, circuits, units
 from operator_cli.commands.config import connect, setting
 
@@ -28,6 +28,20 @@ from operator_cli.commands.config import connect, setting
 app.command(name="agent", help="AI Agent Executor (Local LLM).")(agent.agent)
 app.command(name="summarize", help="Memory Management & Compaction.")(summarize.summarize)
 app.command(name="call", help="Circuit Switcher (Connect to Node).")(run.call)
+
+# 2. KNOWLEDGE MANAGEMENT
+knowledge_items = [
+    "query       [grey50](Search verified knowledge base)[/grey50]",
+    "list        [grey50](List all verified/proposed items)[/grey50]",
+    "propose     [grey50](Extract and propose new knowledge)[/grey50]",
+    "approve     [grey50](Review and approve proposals)[/grey50]",
+    "refresh     [grey50](Refresh llms.txt index)[/grey50]"
+]
+app.add_typer(
+    knowledge.app, 
+    name="knowledge", 
+    help=f"OAKS Knowledge Management System.{get_tree_str(knowledge_items, 'cyan')}"
+)
 
 # 3. SETTING (Configuration)
 app.add_typer(setting.app, name="setting", help="Configure Operator CLI settings.")
@@ -39,10 +53,18 @@ app.add_typer(
     name="circuits", 
     help=f"List all available circuits.{get_tree_str(get_circuit_names(), 'gold1')}"
 )
+
+unit_items = [
+    "markdown    [grey50](Expert assistant for Markdown writing)[/grey50]",
+    "planning    [grey50](Strategic guide for task planning)[/grey50]",
+    "python      [grey50](Professional expert for Python development)[/grey50]",
+    "sentinel    [grey50](Autonomous supervisor for quality & QA)[/grey50]",
+    "swift       [grey50](Expert for type-safe Swift development)[/grey50]"
+]
 app.add_typer(
     units.app, 
     name="units", 
-    help=f"List all available units.{get_tree_str(get_unit_names(), 'khaki1')}"
+    help=f"List all available units.{get_tree_str(unit_items, 'khaki1')}"
 )
 
 # --- 하위 호환성 및 숨김 명령어 ---

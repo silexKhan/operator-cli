@@ -22,24 +22,26 @@ python scripts/generate_guide.py
 echo "🔨 [4/5] PyInstaller를 사용하여 바이너리 빌드 중 (onefile 모드)..."
 if (Test-Path "dist") { Remove-Item -Recurse -Force "dist" }
 if (Test-Path "build") { Remove-Item -Recurse -Force "build" }
-pyinstaller --clean --onefile --name operator_bin src/operator_cli/main.py
+pyinstaller --clean --onefile --name operator src/operator_cli/main.py
 
 echo "📦 [5/5] 배포 패키지 구성 중 (Platform: Windows)..."
 # 플랫폼별 폴더 구조 생성
-New-Item -ItemType Directory -Force -Path "release\win"
+if (Test-Path "release") { Remove-Item -Recurse -Force "release" }
+New-Item -ItemType Directory -Force -Path "release\operator_win"
 
 # 빌드 결과물 이동
-Move-Item -Path "dist\operator_bin.exe" -Destination "release\win"
+Move-Item -Path "dist\operator.exe" -Destination "release\operator_win"
+Remove-Item -Recurse -Force "dist"
 
 # 에셋 복사 (protocols 및 가이드)
-Copy-Item -Recurse -Path "protocols" -Destination "release\win"
-Copy-Item -Path "docs\AGENT_GUIDE.md" -Destination "release\win"
+Copy-Item -Recurse -Path "protocols" -Destination "release\operator_win"
+Copy-Item -Path "docs\AGENT_GUIDE.md" -Destination "release\operator_win"
 
 echo "✅ 빌드 및 패키징 완료!"
 echo "------------------------------------------------"
-echo "배포 패키지 위치: .\dist\win\"
+echo "배포 패키지 위치: .\release\operator_win\"
 echo "구성 요소:"
-echo "  - operator_bin.exe (실행 파일)"
+echo "  - operator.exe (실행 파일)"
 echo "  - protocols/ (규약 폴더)"
 echo "  - AGENT_GUIDE.md (에이전트용 가이드)"
 echo "------------------------------------------------"

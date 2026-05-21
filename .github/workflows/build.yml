@@ -24,18 +24,10 @@ jobs:
           pip install -e .
           pip install pyinstaller
 
-      - name: Generate AI Agent Guide
-        run: python scripts/generate_guide.py
-
-      - name: Build with PyInstaller
-        run: pyinstaller --clean --onefile --name operator src/operator_cli/main.py
-
-      - name: Package for macOS
+      - name: Build and Package (macOS)
         run: |
-          mkdir -p release/operator_mac
-          mv dist/operator release/operator_mac/
-          cp -r protocols release/operator_mac/
-          cp docs/AGENT_GUIDE.md release/operator_mac/
+          chmod +x scripts/build.sh
+          ./scripts/build.sh
           cd release && zip -r ../operator_mac.zip operator_mac/
 
       - name: Upload Artifact
@@ -62,20 +54,11 @@ jobs:
           pip install -e .
           pip install pyinstaller
 
-      - name: Generate AI Agent Guide
-        run: python scripts/generate_guide.py
-
-      - name: Build with PyInstaller
-        run: pyinstaller --clean --onefile --name operator src/operator_cli/main.py
-
-      - name: Package for Windows
+      - name: Build and Package (Windows)
         run: |
-          mkdir -p release/operator_win
-          cp dist/operator.exe release/operator_win/
-          cp -r protocols release/operator_win/
-          cp docs/AGENT_GUIDE.md release/operator_win/
+          ./scripts/build.ps1
           python -c "import shutil; shutil.make_archive('operator_win', 'zip', 'release', 'operator_win')"
-        shell: bash
+        shell: powershell
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4

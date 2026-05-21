@@ -31,7 +31,7 @@ echo "[3/5] Generating AI Agent Guide (AGENT_GUIDE.md)..."
 python3 scripts/generate_guide.py
 
 echo "[4/5] Building binary with PyInstaller (onefile mode)..."
-rm -rf dist/ build/ release/
+rm -rf dist/ build/
 pyinstaller --clean --onefile --name operator src/operator_cli/main.py
 
 echo "[5/5] Organizing release package (Platform: macOS)..."

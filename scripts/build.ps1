@@ -23,7 +23,6 @@ if (Test-Path "build") { Remove-Item -Recurse -Force "build" }
 pyinstaller --clean --onefile --name operator src/operator_cli/main.py
 
 Write-Host "[5/5] Organizing release package..."
-if (Test-Path "release") { Remove-Item -Recurse -Force "release" }
 New-Item -ItemType Directory -Force -Path "release\operator_win"
 
 Move-Item -Path "dist\operator.exe" -Destination "release\operator_win"

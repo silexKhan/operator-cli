@@ -47,7 +47,25 @@ def status():
         console.print("Protocol Mode  : [dim]Standby[/dim]")
         
     console.print("System Engine  : [green]Online[/green]")
-    console.print("-" * 30 + "\n")
+    console.print("-" * 30)
+
+    # Windows Compatibility Check (배포 편의성 강화)
+    import sys
+    if sys.platform == "win32":
+        from operator_cli.core.utils import S_INFO, S_LIGHT
+        console.print(f"\n[bold blue]{S_INFO} Windows Compatibility Note:[/bold blue]")
+        
+        # 인코딩 체크
+        current_enc = sys.stdout.encoding.lower()
+        if 'utf-8' not in current_enc:
+            console.print(f"  - [yellow]Current encoding is {current_enc}.[/yellow]")
+            console.print(f"  - {S_LIGHT} Run [bold cyan]'chcp 65001'[/bold cyan] for best experience.")
+        else:
+            console.print("  - [green]UTF-8 encoding is active. (Excellent)[/green]")
+            
+        console.print(f"  - {S_LIGHT} Use [bold]Windows Terminal[/bold] or [bold]PowerShell Core[/bold] for better visuals.\n")
+
+    console.print("\n")
 
 @app.command("reset")
 def reset():

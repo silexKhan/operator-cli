@@ -9,6 +9,12 @@
 - `operator status`: 현재 활성 회선(Circuit) 및 로드된 프로토콜 상태 확인.
 - `operator agent "명령" [-t level]`: LLM을 통해 명령 분석 및 쉘 커맨드 제안.
 - `operator call <circuit>`: 특정 프로젝트 노드로 전환 (예: mcp, gdr).
+- `operator knowledge <subcommand>`: OAKS 지식 관리 시스템 사용.
+  - `query <keyword>`: 검증된 지식 검색.
+  - `propose "<text>"`: 새로운 지식 제안.
+  - `list`: 전체 지식 목록 조회.
+  - `approve <id>`: 제안된 지식 승인 및 라이브러리 이동.
+  - `refresh`: `llms.txt` 인덱스 동기화.
 - `operator summarize`: 최근 작업 이력을 `MEMORY.md`에 구조적으로 요약 기록.
 - `operator setting set-model <model_name>`: 사용할 로컬 모델 변경.
 

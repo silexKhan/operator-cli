@@ -86,6 +86,7 @@ def propose_knowledge(
 
     extractor = KnowledgeExtractor()
     manager = KnowledgeManager()
+    from operator_cli.core.utils import S_OK, S_WARN
     
     with console.status("[bold green]Extracting knowledge candidates...[/bold green]"):
         candidates = extractor.extract_from_text(input_text)
@@ -100,13 +101,13 @@ def propose_knowledge(
         # 충돌 감지 (Conflict Detection)
         conflicts = manager.detect_conflicts(metadata)
         if conflicts:
-            console.print(f"\n[bold yellow]⚠ Conflict Warning for '{metadata.title}':[/bold yellow]")
+            console.print(f"\n[bold yellow]{S_WARN} Conflict Warning for '{metadata.title}':[/bold yellow]")
             for existing, reason in conflicts:
                 console.print(f"  - [dim][{existing.category}][/dim] {existing.title} ({existing.id}): [italic]{reason}[/italic]")
             console.print("[yellow]제안된 지식이 기존 지식과 중복되거나 유사할 수 있습니다. 검토가 필요합니다.[/yellow]\n")
 
         saved_path = manager.save_knowledge(metadata, content)
-        console.print(f"[bold green]✔ Proposed:[/bold green] {metadata.title} ({metadata.id}) -> [dim]{saved_path}[/dim]")
+        console.print(f"[bold green]{S_OK} Proposed:[/bold green] {metadata.title} ({metadata.id}) -> [dim]{saved_path}[/dim]")
 
 @app.command(name="approve")
 def approve_knowledge(
@@ -117,9 +118,10 @@ def approve_knowledge(
     제안된 지식(proposals)을 검토 후 승인하여 library로 이동합니다.
     """
     manager = KnowledgeManager()
+    from operator_cli.core.utils import S_OK
     try:
         new_path = manager.approve_proposal(proposal_id)
-        console.print(f"[bold green]✔ Approved:[/bold green] Knowledge {proposal_id} has been moved to library.")
+        console.print(f"[bold green]{S_OK} Approved:[/bold green] Knowledge {proposal_id} has been moved to library.")
         console.print(f"[dim]Location: {new_path}[/dim]")
     except FileNotFoundError as e:
         console.print(f"[bold red]Error:[/bold red] {str(e)}")
@@ -135,12 +137,13 @@ def refresh_wiki():
     llms.txt 및 llms-full.txt 파일을 최신 지식 기반으로 수동 갱신합니다.
     """
     from operator_cli.core.knowledge.generator import WikiGenerator
+    from operator_cli.core.utils import S_OK
     
     generator = WikiGenerator()
     try:
         with console.status("[bold green]Refreshing OAKS Passive Interface (llms.txt)...[/bold green]"):
             generator.refresh()
-        console.print("[bold green]✔ Success:[/bold green] llms.txt and llms-full.txt have been refreshed.")
+        console.print(f"[bold green]{S_OK} Success:[/bold green] llms.txt and llms-full.txt have been refreshed.")
     except Exception as e:
         console.print(f"[bold red]Error:[/bold red] {str(e)}")
         raise typer.Exit(1)

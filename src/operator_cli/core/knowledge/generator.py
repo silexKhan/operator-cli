@@ -24,9 +24,9 @@ class WikiGenerator:
                                                 지정되지 않을 경우 기본 설정을 사용합니다.
         """
         self.manager = manager or KnowledgeManager()
-        # 프로젝트 루트 경로를 찾습니다.
-        # src/operator_cli/core/knowledge/generator.py -> src/ -> operator-cli/
-        self.project_root = Path(__file__).resolve().parents[4]
+        # 프로젝트 루트 경로를 찾습니다. (바이너리 환경 호환)
+        from operator_cli.core.utils import get_project_root
+        self.project_root = get_project_root()
 
     def generate_llms_txt(self) -> str:
         """

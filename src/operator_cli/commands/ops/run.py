@@ -31,8 +31,10 @@ def call(
     if node in available_circuits:
         ctx_mgr.save_context(active_circuit=node)
         full_protocol = proto_engine.get_full_context(node)
-        console.print(f"[bold green]✓[/bold green] Successfully linked to [bold cyan]{node}[/bold cyan] node.")
-        console.print(Panel(full_protocol, title=f"[bold cyan]Active Protocols for {node}[/bold cyan]", border_style="cyan"))
+        from rich.text import Text
+        from operator_cli.core.utils import S_OK
+        console.print(f"[bold green]{S_OK}[/bold green] Successfully linked to [bold cyan]{node}[/bold cyan] node.")
+        console.print(Panel(Text(full_protocol), title=f"[bold cyan]Active Protocols for {node}[/bold cyan]", border_style="cyan"))
     else:
         console.print(f"[bold red]Error:[/bold red] Circuit '[bold yellow]{node}[/bold yellow]' not found.")
         console.print(f"Available circuits: [gold1]{', '.join(available_circuits)}[/gold1]")

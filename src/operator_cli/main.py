@@ -1,14 +1,26 @@
+import sys
+import os
 import typer
 from operator_cli.core.utils import get_circuit_names, get_unit_names
+
+# Windows 유니코드 인코딩 문제 해결 (cp949 대응)
+if sys.platform == "win32":
+    try:
+        import io
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
+    except Exception:
+        pass
 
 __version__ = "0.1.3"
 
 def get_tree_str(items, color="gold1"):
-    """도움말용 트리 구조 문자열 생성"""
+    """도움말용 트리 구조 문자열 생성 (ASCII Safe)"""
     if not items: return ""
     lines = [""]
     for i, item in enumerate(items):
-        connector = "└──" if i == len(items) - 1 else "├──"
+        # 유니코드 에러 방지를 위해 표준 ASCII 기호 사용
+        connector = "+--" if i == len(items) - 1 else "|--"
         lines.append(f"      [bold {color}]{connector} {item}[/bold {color}]")
     return "\n".join(lines)
 

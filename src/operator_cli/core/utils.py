@@ -48,3 +48,19 @@ def get_circuit_names() -> List[str]:
 def get_unit_names() -> List[str]:
     """유닛 이름 목록만 반환 (도움말/검증용)"""
     return [u["name"] for u in get_unit_list()]
+
+def get_safe_symbol(unicode_sym: str, ascii_sym: str) -> str:
+    """환경에 따라 안전한 기호 반환"""
+    import sys
+    if sys.platform == "win32":
+        # Windows에서는 ASCII 안전 기호 우선 사용
+        return ascii_sym
+    return unicode_sym
+
+# 글로벌 안전 기호 정의
+S_OK = get_safe_symbol("✓", "[OK]")
+S_WARN = get_safe_symbol("⚠", "[!]")
+S_ERR = get_safe_symbol("✕", "[X]")
+S_CIRCUIT = get_safe_symbol("📡", ">>")
+S_PROTO = get_safe_symbol("📜", "--")
+S_KNOWLEDGE = get_safe_symbol("🧠", "KN")

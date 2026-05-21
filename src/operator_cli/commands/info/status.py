@@ -20,13 +20,15 @@ def status():
     from rich.console import Console
     from operator_cli.core.models.context import ContextManager
     
+    from operator_cli.core.utils import S_CIRCUIT, S_PROTO, S_ERR
+    
     console = Console()
     PROJECT_ROOT = get_project_root()
     ctx_mgr = ContextManager(context_path=str(PROJECT_ROOT / ".operator_context.json"))
     active_circuit = ctx_mgr.get_active_circuit()
     
-    console.print("\n[bold yellow]📡 Operator Status Report[/bold yellow]")
-    console.print("─" * 30)
+    console.print(f"\n[bold yellow]{S_CIRCUIT} Operator Status Report[/bold yellow]")
+    console.print("-" * 30)
     
     if active_circuit:
         console.print(f"Active Circuit : [bold green]{active_circuit}[/bold green]")
@@ -37,7 +39,7 @@ def status():
         proto_engine = get_engine()
         full_protocol = proto_engine.get_full_context(active_circuit)
         
-        console.print("\n[bold cyan]📜 Active Protocols:[/bold cyan]")
+        console.print(f"\n[bold cyan]{S_PROTO} Active Protocols:[/bold cyan]")
         # Disable markup to avoid conflict with [LITERAL] tags
         console.print(Panel(Text(full_protocol), border_style="dim"))
     else:
@@ -45,7 +47,7 @@ def status():
         console.print("Protocol Mode  : [dim]Standby[/dim]")
         
     console.print("System Engine  : [green]Online[/green]")
-    console.print("─" * 30 + "\n")
+    console.print("-" * 30 + "\n")
 
 @app.command("reset")
 def reset():
@@ -54,9 +56,10 @@ def reset():
     """
     from rich.console import Console
     from operator_cli.core.models.context import ContextManager
+    from operator_cli.core.utils import S_ERR
     
     console = Console()
     PROJECT_ROOT = get_project_root()
     ctx_mgr = ContextManager(context_path=str(PROJECT_ROOT / ".operator_context.json"))
     ctx_mgr.save_context(active_circuit=None)
-    console.print("[bold red]✕[/bold red] Operator context has been reset. All circuits disconnected.")
+    console.print(f"[bold red]{S_ERR}[/bold red] Operator context has been reset. All circuits disconnected.")

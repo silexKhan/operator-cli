@@ -7,6 +7,9 @@ on:
     branches: [ main, master ]
   workflow_dispatch: # 수동 실행 지원
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # 🚀 Node.js 20 Deprecation 이슈 해결용
+
 jobs:
   build-macos:
     runs-on: macos-latest

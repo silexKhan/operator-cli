@@ -1,3 +1,4 @@
+README.md
 setup.py
 src/operator_cli/__init__.py
 src/operator_cli/main.py
@@ -17,12 +18,17 @@ src/operator_cli/commands/info/status.py
 src/operator_cli/commands/info/units.py
 src/operator_cli/commands/ops/__init__.py
 src/operator_cli/commands/ops/agent.py
+src/operator_cli/commands/ops/knowledge.py
 src/operator_cli/commands/ops/run.py
 src/operator_cli/commands/ops/summarize.py
 src/operator_cli/core/__init__.py
 src/operator_cli/core/utils.py
 src/operator_cli/core/compaction/__init__.py
 src/operator_cli/core/compaction/engine.py
+src/operator_cli/core/knowledge/__init__.py
+src/operator_cli/core/knowledge/extractor.py
+src/operator_cli/core/knowledge/generator.py
+src/operator_cli/core/knowledge/manager.py
 src/operator_cli/core/models/__init__.py
 src/operator_cli/core/models/context.py
 src/operator_cli/core/protocol/__init__.py

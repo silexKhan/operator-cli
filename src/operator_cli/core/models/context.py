@@ -17,7 +17,7 @@ class ContextManager:
     def _load_context(self) -> OperatorContext:
         if self.context_path.exists():
             try:
-                with open(self.context_path, "r") as f:
+                with open(self.context_path, "r", encoding="utf-8") as f:
                     data = json.load(f)
                     return OperatorContext(**data)
             except Exception:
@@ -36,8 +36,8 @@ class ContextManager:
         if history is not None:
             self.context.history = history
             
-        with open(self.context_path, "w") as f:
-            json.dump(self.context.model_dump(), f, indent=2)
+        with open(self.context_path, "w", encoding="utf-8") as f:
+            json.dump(self.context.model_dump(), f, ensure_ascii=False, indent=2)
 
     def get_active_circuit(self) -> Optional[str]:
         return self.context.active_circuit

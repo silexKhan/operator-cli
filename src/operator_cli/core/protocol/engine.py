@@ -18,7 +18,8 @@ class ProtocolEngine:
         frontmatter = {}
         markdown_content = content
         
-        match = re.match(r"^---\s*\n(.*?)\n---\s*\n(.*)$", content, re.DOTALL)
+        # 파일 맨 앞의 빈 줄이나 개행이 존재해도 유연하게 매칭되도록 개선
+        match = re.match(r"^\s*---\s*\n(.*?)\n---\s*\n(.*)$", content, re.DOTALL)
         if match:
             yaml_block = match.group(1)
             markdown_content = match.group(2)
@@ -189,6 +190,8 @@ class ProtocolEngine:
                     compressed = compressed.replace(placeholder, original_content)
                 
                 context_mgr.set_compressed_protocol(circuit_name, compressed)
+                # 압축 성공 시 즉각 반환하여 이번 턴부터 최적화된 프롬프트 즉시 적용 및 낭비 방지
+                return compressed
             except Exception:
                 pass # 압축 실패 시 원본 사용 유지
                 

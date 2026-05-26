@@ -32,9 +32,8 @@ def format_conversation_for_summary(messages: List[Dict]) -> str:
         elif role == "assistant":
             formatted_text += f"[Assistant]: {content}\n\n"
         elif role == "system":
-            # System prompts might be too long, but we might need some of them.
-            # For now, let's include them but marked.
-            formatted_text += f"[System]: {content}\n\n"
+            # 거대 시스템 프롬프트가 요약 문자열 빌더에 포함되는 것을 스킵하여 토큰 낭비와 요약 왜곡(노이즈)을 차단
+            continue
         elif role == "tool":
             # Truncate tool results if too long to save context tokens
             max_chars = 2000

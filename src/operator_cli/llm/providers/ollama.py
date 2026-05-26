@@ -102,12 +102,13 @@ class LocalLLM(LLMProvider):
         response = self.client.chat(model=self.model, messages=messages, options=options)
         command = response['message']['content'].strip()
 
-        if command.startswith("```"):
-            lines = command.split("\n")
-            if len(lines) > 1:
-                command = lines[1].strip()
-        if command.endswith("```"):
-            command = command.rstrip("`").strip()
+        # 정규식을 이용해 마크다운 코드 블록 내부의 멀티라인 쉘 명령어를 완벽히 안전하게 추출
+        import re
+        match = re.search(r"```(?:[a-zA-Z0-9_\-]+)?\n(.*?)```", command, re.DOTALL)
+        if match:
+            command = match.group(1).strip()
+        elif command.startswith("```") and command.endswith("```"):
+            command = command.strip("`").strip()
             
         return command
 

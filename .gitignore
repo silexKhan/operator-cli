@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+env/
+venv/
+.env
+
+# Operator CLI specific
+.operator_context.json
+release/operator_mac/.operator_context.json
+build/
+dist/
+release/operator_mac/operator
+
+# macOS
+.DS_Store
+
+# IDEs
+.vscode/
+.idea/

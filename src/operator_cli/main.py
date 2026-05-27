@@ -31,15 +31,31 @@ app = typer.Typer(
     rich_markup_mode="rich",
 )
 
-# 명령어 모듈 로드
-from operator_cli.commands.ops import run, agent, summarize, knowledge
-from operator_cli.commands.info import status, circuits, units
-from operator_cli.commands.config import connect, setting
-
 # 1. CORE OPERATIONS
-app.command(name="agent", help="AI Agent Executor (Local LLM).")(agent.agent)
-app.command(name="summarize", help="Memory Management & Compaction.")(summarize.summarize)
-app.command(name="call", help="Circuit Switcher (Connect to Node).")(run.call)
+@app.command(name="agent", help="AI Agent Executor (Local LLM).")
+def agent_cmd(
+    instruction: str = typer.Argument(..., help="실행할 AI 에이전트 명령"),
+    execute: bool = typer.Option(False, "--execute", "-e", help="제안된 쉘 커맨드를 자동으로 실행할지 묻는 프롬프트를 활성화합니다."),
+    model: str = typer.Option(None, "--model", "-m", help="사용할 로컬 LLM 모델 이름"),
+    thinking: str = typer.Option("medium", "--thinking", "-t", help="추론 강도 설정")
+):
+    from operator_cli.commands.ops.agent import agent
+    return agent(instruction, execute, model, thinking)
+
+@app.command(name="summarize", help="Memory Management & Compaction.")
+def summarize_cmd(
+    circuit: str = typer.Argument(None, help="압축할 회선 이름"),
+    force: bool = typer.Option(False, "--force", "-f", help="강제 압축 실행")
+):
+    from operator_cli.commands.ops.summarize import summarize
+    return summarize(circuit, force)
+
+@app.command(name="call", help="Circuit Switcher (Connect to Node).")
+def call_cmd(
+    node: str = typer.Argument(..., help="연결할 노드(회선) 이름")
+):
+    from operator_cli.commands.ops.run import call
+    return call(node)
 
 # 2. KNOWLEDGE MANAGEMENT
 knowledge_items = [
@@ -49,6 +65,7 @@ knowledge_items = [
     "approve     [grey50](Review and approve proposals)[/grey50]",
     "refresh     [grey50](Refresh llms.txt index)[/grey50]"
 ]
+from operator_cli.commands.ops import knowledge
 app.add_typer(
     knowledge.app, 
     name="knowledge", 
@@ -56,9 +73,11 @@ app.add_typer(
 )
 
 # 3. SETTING (Configuration)
+from operator_cli.commands.config import setting
 app.add_typer(setting.app, name="setting", help="Configure Operator CLI settings.")
 
 # 4. Information Commands
+from operator_cli.commands.info import status, circuits, units
 app.add_typer(status.app, name="status", help="System Status Checker.")
 app.add_typer(
     circuits.app, 
@@ -80,6 +99,8 @@ app.add_typer(
 )
 
 # --- 하위 호환성 및 숨김 명령어 ---
+from operator_cli.commands.config import connect
+from operator_cli.commands.ops import run
 app.command(name="connect", hidden=True)(connect.connect)
 app.command(name="run", hidden=True)(run.call)
 app.command(name="do", hidden=True)(run.call)

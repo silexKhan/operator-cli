@@ -42,6 +42,11 @@ class ContextManager:
     def get_active_circuit(self) -> Optional[str]:
         return self.context.active_circuit
 
+    def clear_active_circuit(self):
+        self.context.active_circuit = None
+        with open(self.context_path, "w", encoding="utf-8") as f:
+            json.dump(self.context.model_dump(), f, ensure_ascii=False, indent=2)
+
     def get_default_model(self) -> str:
         return self.context.default_model
 

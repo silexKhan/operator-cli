@@ -79,5 +79,5 @@ def reset():
     console = Console()
     PROJECT_ROOT = get_project_root()
     ctx_mgr = ContextManager(context_path=str(PROJECT_ROOT / ".operator_context.json"))
-    ctx_mgr.save_context(active_circuit=None)
+    ctx_mgr.clear_active_circuit()
     console.print(f"[bold red]{S_ERR}[/bold red] Operator context has been reset. All circuits disconnected.")

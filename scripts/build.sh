@@ -32,7 +32,7 @@ python3 scripts/generate_guide.py
 
 echo "[4/5] Building binary with PyInstaller (onefile mode)..."
 rm -rf dist/ build/
-pyinstaller --clean --onefile --name operator src/operator_cli/main.py
+pyinstaller --clean --onefile --name operator --exclude-module setuptools src/operator_cli/main.py
 
 echo "[5/5] Organizing release package (Platform: macOS)..."
 mkdir -p release/operator_mac

@@ -191,8 +191,8 @@ class ProtocolEngine:
                 
                 context_mgr.set_compressed_protocol(circuit_name, compressed)
                 # 압축 성공 시 즉각 반환하여 이번 턴부터 최적화된 프롬프트 즉시 적용 및 낭비 방지
-                return compressed
+                return compressed.replace("[LITERAL]", "").replace("[/LITERAL]", "")
             except Exception:
                 pass # 압축 실패 시 원본 사용 유지
                 
-        return full_text
+        return full_text.replace("[LITERAL]", "").replace("[/LITERAL]", "")

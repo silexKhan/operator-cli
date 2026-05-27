@@ -118,16 +118,56 @@ def approve_knowledge(
     제안된 지식(proposals)을 검토 후 승인하여 library로 이동합니다.
     """
     manager = KnowledgeManager()
-    from operator_cli.core.utils import S_OK
+    from operator_cli.core.utils import S_OK, get_project_root
+    from operator_cli.core.models.context import ContextManager
+    from datetime import datetime
+    
     try:
         new_path = manager.approve_proposal(proposal_id)
+        
+        # 마지막 지식 업데이트 시점 기록 (Graphify 자동 업데이트 예약용)
+        root = get_project_root()
+        ctx_mgr = ContextManager(context_path=str(root / ".operator_context.json"))
+        ctx_mgr.save_context(last_update=datetime.now().isoformat())
+        
         console.print(f"[bold green]{S_OK} Approved:[/bold green] Knowledge {proposal_id} has been moved to library.")
         console.print(f"[dim]Location: {new_path}[/dim]")
+        console.print(f"[dim]Graphify update scheduled (based on your delay setting).[/dim]")
     except FileNotFoundError as e:
         console.print(f"[bold red]Error:[/bold red] {str(e)}")
         raise typer.Exit(1)
     except Exception as e:
         console.print(f"[bold red]Unexpected Error:[/bold red] {str(e)}")
+        raise typer.Exit(1)
+
+@app.command(name="open")
+def open_knowledge(
+    knowledge_id: str = typer.Argument(..., help="열어볼 지식 ID (예: K-FC4D42DE)")
+):
+    """
+    [bold cyan]지식 원본 열기[/bold cyan]
+    지식 ID에 해당하는 원본 마크다운 파일을 시스템 기본 편집기로 엽니다.
+    """
+    from operator_cli.core.utils import get_project_root, S_ERR, S_INFO
+    root = get_project_root()
+    
+    # library와 proposals 폴더 모두 탐색
+    potential_paths = [
+        root / "knowledge" / "library" / f"{knowledge_id}.md",
+        root / "knowledge" / "proposals" / f"{knowledge_id}.md"
+    ]
+    
+    target_path = None
+    for p in potential_paths:
+        if p.exists():
+            target_path = p
+            break
+            
+    if target_path:
+        console.print(f"[bold blue]{S_INFO} Opening knowledge file:[/bold blue] {target_path}")
+        typer.launch(str(target_path))
+    else:
+        console.print(f"[bold red]{S_ERR} Error:[/bold red] Knowledge file for '{knowledge_id}' not found.")
         raise typer.Exit(1)
 
 @app.command(name="refresh")

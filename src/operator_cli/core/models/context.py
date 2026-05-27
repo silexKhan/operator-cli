@@ -1,11 +1,15 @@
 import json
 from pathlib import Path
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional, Dict, List
 
 class OperatorContext(BaseModel):
+    model_config = ConfigDict(extra='ignore')
+    
     active_circuit: Optional[str] = None
     default_model: str = "gemma4:latest"
+    graphify_auto_update_delay: int = 30  # 유예 시간 (분 단위)
+    last_knowledge_update: Optional[str] = None  # 마지막 지식 업데이트 시점 (ISO 형식)
     compressed_protocols: Dict[str, str] = {}  # {circuit_name: compressed_text}
     history: List[Dict[str, str]] = []  # [{"role": "...", "content": "..."}]
 
@@ -19,18 +23,24 @@ class ContextManager:
             try:
                 with open(self.context_path, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                    return OperatorContext(**data)
+                    # Use model_validate to ensure default values for missing fields
+                    return OperatorContext.model_validate(data)
             except Exception:
                 return OperatorContext()
         return OperatorContext()
 
     def save_context(self, active_circuit: Optional[str] = None, default_model: Optional[str] = None, 
+                     graphify_delay: Optional[int] = None, last_update: Optional[str] = None,
                      compressed_protocols: Optional[Dict[str, str]] = None,
                      history: Optional[List[Dict[str, str]]] = None):
         if active_circuit is not None:
             self.context.active_circuit = active_circuit
         if default_model is not None:
             self.context.default_model = default_model
+        if graphify_delay is not None:
+            self.context.graphify_auto_update_delay = graphify_delay
+        if last_update is not None:
+            self.context.last_knowledge_update = last_update
         if compressed_protocols is not None:
             self.context.compressed_protocols.update(compressed_protocols)
         if history is not None:

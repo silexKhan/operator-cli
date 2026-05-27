@@ -99,3 +99,13 @@ def set_model(model_name: str = typer.Argument(..., help="변경할 로컬 LLM �
 
     ctx_mgr.save_context(default_model=model_name)
     console.print(f"[bold green]✓[/bold green] Default local LLM has been set to: [bold cyan]{model_name}[/bold cyan]")
+
+@app.command(name="graphify-delay")
+def set_graphify_delay(minutes: int = typer.Argument(..., help="Graphify 자동 업데이트 유예 시간 (분)")):
+    """Set the delay for automatic Graphify updates after knowledge changes."""
+    console = Console()
+    PROJECT_ROOT = get_project_root()
+    ctx_mgr = ContextManager(context_path=str(PROJECT_ROOT / ".operator_context.json"))
+    
+    ctx_mgr.save_context(graphify_delay=minutes)
+    console.print(f"[bold green]✓[/bold green] Graphify auto-update delay has been set to: [bold cyan]{minutes}[/bold cyan] minutes")

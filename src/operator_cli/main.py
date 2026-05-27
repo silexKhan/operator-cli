@@ -65,18 +65,30 @@ knowledge_items = [
     "approve     [grey50](Review and approve proposals)[/grey50]",
     "refresh     [grey50](Refresh llms.txt index)[/grey50]"
 ]
-from operator_cli.commands.ops import knowledge
+import operator_cli.commands.ops.knowledge as knowledge
 app.add_typer(
     knowledge.app, 
     name="knowledge", 
     help=f"OAKS Knowledge Management System.{get_tree_str(knowledge_items, 'cyan')}"
 )
 
-# 3. SETTING (Configuration)
+# 3. GRAPH MANAGEMENT
+graph_items = [
+    "run         [grey50](Run graphify to build/update knowledge graph)[/grey50]",
+    "open        [grey50](Open graph report or interactive HTML)[/grey50]"
+]
+import operator_cli.commands.ops.graph as graph
+app.add_typer(
+    graph.app,
+    name="graph",
+    help=f"Knowledge Graph Management (Graphify).{get_tree_str(graph_items, 'plum1')}"
+)
+
+# 4. SETTING (Configuration)
 from operator_cli.commands.config import setting
 app.add_typer(setting.app, name="setting", help="Configure Operator CLI settings.")
 
-# 4. Information Commands
+# 5. Information Commands
 from operator_cli.commands.info import status, circuits, units
 app.add_typer(status.app, name="status", help="System Status Checker.")
 app.add_typer(

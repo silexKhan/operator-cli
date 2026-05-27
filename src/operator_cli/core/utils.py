@@ -4,19 +4,24 @@ from typing import List, Dict, Any
 
 def get_project_root() -> Path:
     """
-    프로젝트 루트 경로를 결정합니다.
-    1. 현재 작업 디렉토리(CWD)에 'protocols' 또는 'knowledge'가 있으면 CWD를 반환 (로컬 프로젝트 모드)
-    2. 그렇지 않으면 바이너리/스크립트 설치 위치를 반환 (글로벌 모드)
+    현재 위치에서 프로젝트의 실제 루트(operator-cli)를 찾습니다.
+    실패 시 현재 작업 디렉토리(CWD)를 반환합니다.
     """
-    cwd = Path.cwd()
-    if (cwd / "protocols").exists() or (cwd / "knowledge").exists():
-        return cwd
-        
-    if getattr(sys, 'frozen', False):
-        return Path(sys.executable).parent
-    else:
-        # src/operator_cli/core/utils.py -> root is 4 levels up
-        return Path(__file__).parent.parent.parent.parent
+    curr = Path.cwd().resolve()
+    temp = curr
+    
+    # 상위 10단계까지 'operator-cli' 폴더 검색
+    for _ in range(10):
+        # 이름이 일치하거나 확실한 소스 구조가 있는 경우
+        if temp.name.lower() == "operator-cli" or (temp / "src" / "operator_cli").exists():
+            return temp
+            
+        if temp.parent == temp:
+            break
+        temp = temp.parent
+
+    # 찾지 못하면 무조건 현재 위치 반환 (사용자 요청: "그냥 이폴더에서만")
+    return curr
 
 def get_protocols_dir() -> Path:
     """프로토콜 저장소 디렉토리 경로 반환 (로컬 우선)"""

@@ -1,0 +1,207 @@
+{
+  "/Users/silex/workspace/private/operator-cli/operator_wrapper.sh": {
+    "mtime": 1779246987.137785,
+    "ast_hash": "2890e0248ee4ebb3967ac59475c347b2",
+    "semantic_hash": "2890e0248ee4ebb3967ac59475c347b2"
+  },
+  "/Users/silex/workspace/private/operator-cli/build.sh": {
+    "mtime": 1779840266.3234348,
+    "ast_hash": "c8186c1af2a2f3de24a93616074a12ce",
+    "semantic_hash": "c8186c1af2a2f3de24a93616074a12ce"
+  },
+  "/Users/silex/workspace/private/operator-cli/setup.py": {
+    "mtime": 1779247003.4815383,
+    "ast_hash": "6499b0c5e1ffe2d166c8e0a7cf9f82be",
+    "semantic_hash": "6499b0c5e1ffe2d166c8e0a7cf9f82be"
+  },
+  "/Users/silex/workspace/private/operator-cli/test_operator.sh": {
+    "mtime": 1779857476.3235705,
+    "ast_hash": "3b417e4f420f56ddd6e8fce1d7997270",
+    "semantic_hash": "3b417e4f420f56ddd6e8fce1d7997270"
+  },
+  "/Users/silex/workspace/private/operator-cli/scripts/generate_guide.py": {
+    "mtime": 1779327268.160057,
+    "ast_hash": "3f7bd99b8aa1e5ac8367d11ae3a9f6f7",
+    "semantic_hash": "3f7bd99b8aa1e5ac8367d11ae3a9f6f7"
+  },
+  "/Users/silex/workspace/private/operator-cli/scripts/build.sh": {
+    "mtime": 1779840266.3234348,
+    "ast_hash": "c8186c1af2a2f3de24a93616074a12ce",
+    "semantic_hash": "c8186c1af2a2f3de24a93616074a12ce"
+  },
+  "/Users/silex/workspace/private/operator-cli/scripts/build.ps1": {
+    "mtime": 1779326680.8788764,
+    "ast_hash": "6590a0929aa204f78fd8acf6832b9da7",
+    "semantic_hash": "6590a0929aa204f78fd8acf6832b9da7"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/__init__.py": {
+    "mtime": 1779246824.189153,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/main.py": {
+    "mtime": 1779863245.809315,
+    "ast_hash": "4f7ed1f24e39ac302cba9366583c53f0",
+    "semantic_hash": "4f7ed1f24e39ac302cba9366583c53f0"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/llm/__init__.py": {
+    "mtime": 1779246824.188668,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/llm/base.py": {
+    "mtime": 1779245333.8889081,
+    "ast_hash": "27d541ef68170abb7f12340250d718e0",
+    "semantic_hash": "27d541ef68170abb7f12340250d718e0"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/llm/providers/__init__.py": {
+    "mtime": 1779246824.18856,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/llm/providers/ollama.py": {
+    "mtime": 1779755317.9684076,
+    "ast_hash": "4cb294588e91a0c3cd6815b4e3b75c83",
+    "semantic_hash": "4cb294588e91a0c3cd6815b4e3b75c83"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/core/__init__.py": {
+    "mtime": 1779246824.188769,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/core/utils.py": {
+    "mtime": 1779859061.0183167,
+    "ast_hash": "2ceefc65400a95bd4a0f2eb2d16ef690",
+    "semantic_hash": "2ceefc65400a95bd4a0f2eb2d16ef690"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/core/compaction/__init__.py": {
+    "mtime": 1779246824.188227,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/core/compaction/engine.py": {
+    "mtime": 1779755320.9456248,
+    "ast_hash": "b6cbf1a74fdeaa3366d6c98018aaf986",
+    "semantic_hash": "b6cbf1a74fdeaa3366d6c98018aaf986"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/core/models/__init__.py": {
+    "mtime": 1779246824.188455,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/core/models/context.py": {
+    "mtime": 1779857814.117759,
+    "ast_hash": "91bae5939b4b8aca492552624fb3eb4a",
+    "semantic_hash": "91bae5939b4b8aca492552624fb3eb4a"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/core/protocol/__init__.py": {
+    "mtime": 1779246824.18834,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/core/protocol/engine.py": {
+    "mtime": 1779839628.8275619,
+    "ast_hash": "be3a9b0daf3a3b8471c9648b6ead78f8",
+    "semantic_hash": "be3a9b0daf3a3b8471c9648b6ead78f8"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/core/knowledge/__init__.py": {
+    "mtime": 1779320710.751487,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/core/knowledge/extractor.py": {
+    "mtime": 1779320802.483243,
+    "ast_hash": "d8ad235d05d9b4448ee2a586595efb5a",
+    "semantic_hash": "d8ad235d05d9b4448ee2a586595efb5a"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/core/knowledge/generator.py": {
+    "mtime": 1779326339.1055992,
+    "ast_hash": "7ccd1b899882b1e2f1b3d9b2c3b5d95d",
+    "semantic_hash": "7ccd1b899882b1e2f1b3d9b2c3b5d95d"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/core/knowledge/manager.py": {
+    "mtime": 1779323622.1908913,
+    "ast_hash": "53083a8eb1003ace291b0e6746b98e5f",
+    "semantic_hash": "53083a8eb1003ace291b0e6746b98e5f"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/executor/shell.py": {
+    "mtime": 1779755323.197395,
+    "ast_hash": "cf477a7c696546e8bcfa57dac04b324d",
+    "semantic_hash": "cf477a7c696546e8bcfa57dac04b324d"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/executor/__init__.py": {
+    "mtime": 1779246824.1891062,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/commands/__init__.py": {
+    "mtime": 1779246824.188874,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/commands/config/connect.py": {
+    "mtime": 1779839634.8979025,
+    "ast_hash": "9f33f909c38f27eec8abcbaaa693f76e",
+    "semantic_hash": "9f33f909c38f27eec8abcbaaa693f76e"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/commands/config/__init__.py": {
+    "mtime": 1779246824.188105,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/commands/config/setting.py": {
+    "mtime": 1779857216.5287306,
+    "ast_hash": "5b89f010026bb000f284f15c8ef30f6f",
+    "semantic_hash": "5b89f010026bb000f284f15c8ef30f6f"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/commands/info/circuits.py": {
+    "mtime": 1779162503.213005,
+    "ast_hash": "c8291a2fca2cfd8b8c4b1a66ff4851fe",
+    "semantic_hash": "c8291a2fca2cfd8b8c4b1a66ff4851fe"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/commands/info/units.py": {
+    "mtime": 1779162508.1246166,
+    "ast_hash": "1a7384dd109b207bffe28930e9c2ed1a",
+    "semantic_hash": "1a7384dd109b207bffe28930e9c2ed1a"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/commands/info/__init__.py": {
+    "mtime": 1779246824.187829,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/commands/info/status.py": {
+    "mtime": 1779841130.3101206,
+    "ast_hash": "fb8e6c8df3d0a8ca3ac870c8f745cf1e",
+    "semantic_hash": "fb8e6c8df3d0a8ca3ac870c8f745cf1e"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/commands/ops/run.py": {
+    "mtime": 1779326298.935925,
+    "ast_hash": "854662eac0f3c06d332be7e9a11a41a2",
+    "semantic_hash": "854662eac0f3c06d332be7e9a11a41a2"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/commands/ops/graph.py": {
+    "mtime": 1779863303.7693257,
+    "ast_hash": "bfb706c7a5348e5a6a13f6546ce46a1b",
+    "semantic_hash": "bfb706c7a5348e5a6a13f6546ce46a1b"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/commands/ops/__init__.py": {
+    "mtime": 1779863182.8647478,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/commands/ops/summarize.py": {
+    "mtime": 1779246942.229365,
+    "ast_hash": "3bb1143c4a5ef595353cd7a2512b6c56",
+    "semantic_hash": "3bb1143c4a5ef595353cd7a2512b6c56"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/commands/ops/agent.py": {
+    "mtime": 1779246937.7688234,
+    "ast_hash": "8c017b71be57043d0138f8f664a4499f",
+    "semantic_hash": "8c017b71be57043d0138f8f664a4499f"
+  },
+  "/Users/silex/workspace/private/operator-cli/src/operator_cli/commands/ops/knowledge.py": {
+    "mtime": 1779857223.8919942,
+    "ast_hash": "49441bd3c3a42d527659835405e77ed1",
+    "semantic_hash": "49441bd3c3a42d527659835405e77ed1"
+  }
+}

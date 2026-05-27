@@ -1,0 +1,18 @@
+# 1. Ignore Everything by Default
+*
+
+# 2. Allow only Knowledge folder and its contents
+!knowledge/
+!knowledge/**
+
+# 3. Except technical noise within knowledge
+knowledge/**/.DS_Store
+knowledge/**/__pycache__
+
+# 4. Standard Graphify noise (Always ignore)
+.venv/
+build/
+dist/
+release/
+graphify-out/
+.operator_context.json

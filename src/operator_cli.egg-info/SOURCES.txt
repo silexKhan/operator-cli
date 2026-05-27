@@ -18,6 +18,7 @@ src/operator_cli/commands/info/status.py
 src/operator_cli/commands/info/units.py
 src/operator_cli/commands/ops/__init__.py
 src/operator_cli/commands/ops/agent.py
+src/operator_cli/commands/ops/graph.py
 src/operator_cli/commands/ops/knowledge.py
 src/operator_cli/commands/ops/run.py
 src/operator_cli/commands/ops/summarize.py

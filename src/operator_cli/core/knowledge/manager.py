@@ -38,19 +38,27 @@ class KnowledgeManager:
         
         Args:
             base_path (Optional[Path]): 지식 저장소의 기본 경로. 
-                                     지정되지 않을 경우 현재 디렉토리 또는 프로젝트 루트의 'knowledge' 폴더를 사용합니다.
+                                     지정되지 않을 경우 실행 파일의 물리적 폴더 또는 마스터 프로젝트 루트의 'knowledge' 폴더를 사용합니다.
         """
         if base_path:
             self.base_path = Path(base_path)
         else:
-            # 1. 현재 디렉토리에 knowledge가 있으면 우선 사용 (Portable Mode)
-            cwd_knowledge = Path.cwd() / "knowledge"
-            if cwd_knowledge.exists() and cwd_knowledge.is_dir():
-                self.base_path = cwd_knowledge
+            import sys
+            from operator_cli.core.utils import get_project_root
+            
+            project_root = get_project_root()
+            
+            # 1. PyInstaller 바이너리로 기동 중일 때 (Portable Mode 지원)
+            if getattr(sys, 'frozen', False):
+                # 실행 파일(sys.executable) 옆에 'knowledge' 폴더가 있는지 체크
+                exe_knowledge = Path(sys.executable).resolve().parent / "knowledge"
+                if exe_knowledge.exists() and exe_knowledge.is_dir():
+                    self.base_path = exe_knowledge
+                else:
+                    self.base_path = project_root / "knowledge"
             else:
-                # 2. 기본적으로 프로젝트 루트의 'knowledge' 디렉토리를 탐색
-                from operator_cli.core.utils import get_project_root
-                self.base_path = get_project_root() / "knowledge"
+                # 2. 소스 코드 기동 중일 때는 항상 메인 프로젝트의 'knowledge'를 지향
+                self.base_path = project_root / "knowledge"
             
         self._ensure_directories()
 

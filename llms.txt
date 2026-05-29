@@ -1,8 +1,5 @@
 # OAKS Knowledge Library
 > Automated knowledge base for Operator CLI (OAKS Phase 3)
-> Updated: 2026-05-21 09:07:52
+> Updated: 2026-05-29 09:16:11
 
 ## Knowledge Entries
-
-- [OAKS 시스템 개요 및 기능](knowledge/library/K-5241F24A.md): Category: library | Tags: OAKS, 지식 관리, Knowledge Management, Wiki, CLI
-- [OAKS Passive Interface 표준 준수](knowledge/library/K-72A7E396.md): Category: library | Tags: OAKS, Passive Interface, llms.txt, 표준

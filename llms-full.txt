@@ -1,23 +1,5 @@
 # OAKS Full Knowledge Base
-> Total entries: 2
-> Last generated: 2026-05-21 09:07:52
+> Total entries: 0
+> Last generated: 2026-05-29 09:16:11
 
 ================================================================================
-
-## OAKS Passive Interface 표준 준수
-Metadata: ID=K-72A7E396, Tags=OAKS, Passive Interface, llms.txt, 표준
-
-OAKS Passive Interface는 **`llms.txt` 표준**을 따르도록 설계되었습니다. 이는 해당 인터페이스가 특정 표준화된 형식과 규칙을 준수함을 의미하며, 시스템 간의 상호 운용성(Interoperability)과 데이터 일관성을 보장합니다.
-
-----------------------------------------
-
-## OAKS 시스템 개요 및 기능
-Metadata: ID=K-5241F24A, Tags=OAKS, 지식 관리, Knowledge Management, Wiki, CLI
-
-OAKS 시스템은 Operator CLI에 통합된 지식 관리(Knowledge Management)를 위한 혁신적인 도구입니다. 주요 기능은 다음과 같습니다:
-
-* **지식 관리:** 체계적인 지식 아카이빙 및 관리를 지원합니다.
-* **태그 기반 검색:** 콘텐츠를 태그 단위로 분류하고 빠르고 정확하게 검색할 수 있습니다.
-* **자동 Wiki 생성:** 입력된 지식 데이터를 기반으로 Wiki 페이지를 자동으로 생성하여 관리 효율성을 높입니다.
-
-----------------------------------------

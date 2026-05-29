@@ -14,6 +14,7 @@ release/operator_mac/.operator_context.json
 build/
 dist/
 release/operator_mac/operator
+release/operator_mac/knowledge/
 
 # macOS
 .DS_Store

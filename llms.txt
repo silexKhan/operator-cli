@@ -1,5 +1,12 @@
 # OAKS Knowledge Library
 > Automated knowledge base for Operator CLI (OAKS Phase 3)
-> Updated: 2026-05-29 09:16:11
+> Updated: 2026-06-01 13:24:02
 
 ## Knowledge Entries
+
+- [Yadiji GDSLib 연동 시 701 에러 해결 방안](knowledge/library/K-43014164.md): Category: library | Tags: Yadiji, GDSLib, 701 에러, 연동, 버그 수정
+- [글로벌 플랫폼 기업 전환을 위한 성장 전략](knowledge/library/K-FC4D42DE.md): Category: library | Tags: Strategy, 글로벌전략, 시장확장, 매출목표
+- [골프존의 핵심 기술 제품군 및 특징](knowledge/library/K-8EB2DDFD.md): Category: library | Tags: Fact, 기술스택, 언리얼엔진5, AI
+- [주식회사 골프존 핵심 기업 정보 및 시장 지위](knowledge/library/K-1F22BB3D.md): Category: library | Tags: Fact, 기업정보, 시장지위, 지주사
+- [OAKS 시스템 개요 및 기능](knowledge/library/K-5241F24A.md): Category: library | Tags: OAKS, 지식 관리, Knowledge Management, Wiki, CLI
+- [OAKS Passive Interface 표준 준수](knowledge/library/K-72A7E396.md): Category: library | Tags: OAKS, Passive Interface, llms.txt, 표준

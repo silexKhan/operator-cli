@@ -24,7 +24,7 @@ def generate_guide(output_path: Path):
 ## 2. 주요 명령어 (Commands)
 - `operator status`: 현재 활성 회선(Circuit) 및 로드된 프로토콜 상태 확인.
 - `operator agent "명령" [-t level]`: LLM을 통해 명령 분석 및 쉘 커맨드 제안.
-- `operator call <circuit>`: 특정 프로젝트 노드로 전환 (예: mcp, gdr).
+- `operator call <circuit>`: 특정 프로젝트 노드로 전환 (예: matrix, research).
 - `operator knowledge <subcommand>`: OAKS 지식 관리 시스템 사용.
   - `query <keyword>`: 검증된 지식 검색.
   - `propose "<text>"`: 새로운 지식 제안.
@@ -52,7 +52,7 @@ def generate_guide(output_path: Path):
 3. 작업 완료 후 `operator summarize`를 실행하여 기억을 영속화합니다.
 """
     
-    circuits = "\n".join([f"- **{c}**" for c in get_circuit_names()])
+    circuits = "\n".join([f"- **{c}**" for c in get_circuit_names() if c not in ("gdr", "yardage")])
     units = "\n".join([f"- **{u}**" for u in get_unit_names()])
     
     global_proto = engine.load_global_protocol()

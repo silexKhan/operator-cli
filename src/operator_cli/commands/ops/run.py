@@ -15,7 +15,7 @@ app = typer.Typer(
 
 @app.callback(invoke_without_command=True)
 def call(
-    node: str = typer.Argument(..., help="전환할 회선 이름 (예: gdr, mcp, research)")
+    node: str = typer.Argument(..., help="전환할 회선 이름 (예: gdr, matrix, research)")
 ):
     from rich.console import Console
     from rich.panel import Panel

@@ -36,7 +36,7 @@ def agent(
     active_model = model if model else ctx_mgr.get_default_model()
 
     if not target_circuit:
-        console.print(f"[bold red]Error:[/bold red] No active node. Please switch to a node first (e.g., [cyan]'operator call mcp'[/cyan]).")
+        console.print(f"[bold red]Error:[/bold red] No active node. Please switch to a node first (e.g., [cyan]'operator call matrix'[/cyan]).")
         raise typer.Exit(1)
 
     full_context = proto_engine.get_full_context(target_circuit, context_mgr=ctx_mgr)

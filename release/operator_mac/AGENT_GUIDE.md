@@ -8,7 +8,7 @@
 ## 2. 주요 명령어 (Commands)
 - `operator status`: 현재 활성 회선(Circuit) 및 로드된 프로토콜 상태 확인.
 - `operator agent "명령" [-t level]`: LLM을 통해 명령 분석 및 쉘 커맨드 제안.
-- `operator call <circuit>`: 특정 프로젝트 노드로 전환 (예: mcp, gdr).
+- `operator call <circuit>`: 특정 프로젝트 노드로 전환 (예: matrix, research).
 - `operator knowledge <subcommand>`: OAKS 지식 관리 시스템 사용.
   - `query <keyword>`: 검증된 지식 검색.
   - `propose "<text>"`: 새로운 지식 제안.
@@ -20,10 +20,8 @@
 
 ## 3. 가용 회선 및 유닛 (Available Resources)
 ### 회선 (Circuits)
-- **gdr**
-- **mcp**
+- **matrix**
 - **research**
-- **yardage**
 
 ### 유닛 (Units)
 - **markdown**

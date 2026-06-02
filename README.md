@@ -40,7 +40,7 @@ pip install -e .
 ### 기본 워크플로우
 1. **회선 연결**: 작업할 프로젝트 노드로 전환합니다.
    ```bash
-   operator call mcp
+   operator call matrix
    ```
 2. **명령 수행**: AI 에이전트에게 지시를 내립니다.
    ```bash

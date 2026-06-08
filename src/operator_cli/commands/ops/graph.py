@@ -5,8 +5,6 @@ from pathlib import Path
 from datetime import datetime
 from rich.console import Console
 from operator_cli.core.utils import get_project_root, S_OK, S_ERR
-from operator_cli.core.models.context import ContextManager
-from operator_cli.llm.providers.ollama import LocalLLM
 
 app = typer.Typer(rich_markup_mode="rich")
 console = Console()
@@ -40,6 +38,8 @@ def label_communities(project_root: Path, ctx_mgr):
             except Exception:
                 existing_labels = {}
         
+        from operator_cli.llm.providers.ollama import LocalLLM
+
         active_model = getattr(ctx_mgr.context, "default_model", "gemma4:latest")
         llm = LocalLLM(model=active_model, thinking_level="low")
         
@@ -87,6 +87,8 @@ def graph_run(
     프로젝트의 지식 그래프를 생성하거나 갱신합니다.
     지식 승인 후 설정된 유예 시간(기본 30분)이 지나야 자동으로 실행됩니다.
     """
+    from operator_cli.core.models.context import ContextManager
+
     project_root = get_project_root()
     
     # 릴리즈 폴더 내 실행 시 상위 탐색 보완

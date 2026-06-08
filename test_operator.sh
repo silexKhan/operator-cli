@@ -3,7 +3,8 @@
 # Operator CLI Integration Test Script
 # 이 스크립트는 지금까지 변경된 Operator CLI의 핵심 기능들이 정상 동작하는지 검증합니다.
 
-OPERATOR_CMD="/Users/silex/workspace/private/operator-cli/release/operator_mac/operator"
+export OPERATOR_HOME="/Users/silex/.operator"
+OPERATOR_CMD="/Users/silex/.operator/bin/operator"
 
 echo "=========================================="
 echo "🧪 Operator CLI Integration Test Started"
@@ -21,17 +22,17 @@ echo -e "\n[Test 3] Initial Status"
 $OPERATOR_CMD status
 if [ $? -ne 0 ]; then echo "❌ Initial status check failed!"; exit 1; fi
 
-echo -e "\n[Test 4] Connect to GDR Circuit"
-$OPERATOR_CMD connect gdr > /dev/null
-if [ $? -ne 0 ]; then echo "❌ Connect to GDR failed!"; exit 1; else echo "✓ Connected to GDR."; fi
+echo -e "\n[Test 4] Connect to Matrix Circuit"
+$OPERATOR_CMD connect matrix > /dev/null
+if [ $? -ne 0 ]; then echo "❌ Connect to Matrix failed!"; exit 1; else echo "✓ Connected to Matrix."; fi
 
-echo -e "\n[Test 5] Status Verification (GDR)"
-$OPERATOR_CMD status | grep "Active Circuit : gdr" > /dev/null
-if [ $? -ne 0 ]; then echo "❌ Status does not show GDR!"; exit 1; else echo "✓ Status verified (GDR)."; fi
+echo -e "\n[Test 5] Status Verification (Matrix)"
+$OPERATOR_CMD status | grep "Active Circuit : matrix" > /dev/null
+if [ $? -ne 0 ]; then echo "❌ Status does not show Matrix!"; exit 1; else echo "✓ Status verified (Matrix)."; fi
 
-echo -e "\n[Test 6] Connect to MCP Circuit"
-$OPERATOR_CMD connect mcp > /dev/null
-if [ $? -ne 0 ]; then echo "❌ Connect to MCP failed!"; exit 1; else echo "✓ Connected to MCP."; fi
+echo -e "\n[Test 6] Reconnect to Matrix Circuit"
+$OPERATOR_CMD connect matrix > /dev/null
+if [ $? -ne 0 ]; then echo "❌ Reconnect to Matrix failed!"; exit 1; else echo "✓ Reconnected to Matrix."; fi
 
 echo -e "\n[Test 7] Reset Context"
 $OPERATOR_CMD status reset > /dev/null

@@ -3,9 +3,6 @@ from typing import Optional
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
-from operator_cli.core.knowledge.manager import KnowledgeManager
-from operator_cli.core.knowledge.extractor import KnowledgeExtractor
-from operator_cli.llm.providers.ollama import LocalLLM
 
 app = typer.Typer(rich_markup_mode="rich")
 console = Console()
@@ -18,6 +15,8 @@ def query_knowledge(
     [bold cyan]지식 검색[/bold cyan]
     지식 베이스(Markdown)에서 키워드를 검색합니다.
     """
+    from operator_cli.core.knowledge.manager import KnowledgeManager
+
     manager = KnowledgeManager()
     results = manager.query_knowledge(keyword)
     
@@ -44,6 +43,8 @@ def list_knowledge(
     [bold cyan]지식 목록 출력[/bold cyan]
     현재 저장된 지식 목록을 테이블 형식으로 출력합니다.
     """
+    from operator_cli.core.knowledge.manager import KnowledgeManager
+
     manager = KnowledgeManager()
     knowledges = manager.list_knowledge(category=category)
     
@@ -74,6 +75,9 @@ def propose_knowledge(
     [bold cyan]새로운 지식 제안[/bold cyan]
     텍스트나 파일에서 지식을 추출하여 proposals 폴더에 저장합니다.
     """
+    from operator_cli.core.knowledge.extractor import KnowledgeExtractor
+    from operator_cli.core.knowledge.manager import KnowledgeManager
+
     input_text = text
     if is_file:
         from pathlib import Path
@@ -117,6 +121,8 @@ def approve_knowledge(
     [bold cyan]지식 승인[/bold cyan]
     제안된 지식(proposals)을 검토 후 승인하여 library로 이동합니다.
     """
+    from operator_cli.core.knowledge.manager import KnowledgeManager
+
     manager = KnowledgeManager()
     from operator_cli.core.utils import S_OK, get_project_root
     from operator_cli.core.models.context import ContextManager

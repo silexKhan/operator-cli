@@ -1,9 +1,11 @@
 import json
 import uuid
-from typing import List, Optional, Dict, Any
+from typing import TYPE_CHECKING, List, Optional, Dict, Any
 from datetime import datetime
-from ...llm.providers.ollama import LocalLLM
 from .manager import KnowledgeMetadata
+
+if TYPE_CHECKING:
+    from ...llm.providers.ollama import LocalLLM
 
 KNOWLEDGE_EXTRACTION_PROMPT = """
 당신은 'OAKS(Operator Advanced Knowledge System)'의 지식 추출 엔진입니다.
@@ -32,7 +34,7 @@ class KnowledgeExtractor:
     LLM을 활용하여 텍스트 데이터에서 지식을 추출하는 클래스입니다. (Protocol P-5 준수)
     """
 
-    def __init__(self, llm: Optional[LocalLLM] = None):
+    def __init__(self, llm: Optional["LocalLLM"] = None):
         """
         KnowledgeExtractor를 초기화합니다.
 
@@ -40,7 +42,10 @@ class KnowledgeExtractor:
             llm (Optional[LocalLLM]): 지식 추출에 사용할 LLM 인스턴스. 
                                     지정되지 않을 경우 기본 설정을 사용합니다.
         """
-        self.llm = llm or LocalLLM(thinking_level="high")
+        if llm is None:
+            from ...llm.providers.ollama import LocalLLM
+            llm = LocalLLM(thinking_level="high")
+        self.llm = llm
 
     def extract_from_text(self, text: str) -> List[Dict[str, Any]]:
         """

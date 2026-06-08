@@ -52,7 +52,7 @@ def generate_guide(output_path: Path):
 3. 작업 완료 후 `operator summarize`를 실행하여 기억을 영속화합니다.
 """
     
-    circuits = "\n".join([f"- **{c}**" for c in get_circuit_names() if c not in ("gdr", "yardage")])
+    circuits = "\n".join([f"- **{c}**" for c in get_circuit_names()])
     units = "\n".join([f"- **{u}**" for u in get_unit_names()])
     
     global_proto = engine.load_global_protocol()

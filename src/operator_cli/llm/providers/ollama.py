@@ -1,4 +1,3 @@
-import ollama
 from typing import Optional, List, Dict, Any
 from ..base import LLMProvider
 from ...core.compaction.engine import SUMMARIZATION_SYSTEM_PROMPT, format_conversation_for_summary
@@ -32,6 +31,7 @@ class LocalLLM(LLMProvider):
     @property
     def client(self):
         if self._client is None:
+            import ollama
             self._client = ollama.Client()
         return self._client
 

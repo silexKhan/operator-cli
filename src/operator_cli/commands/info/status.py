@@ -1,6 +1,5 @@
 import typer
 from rich.console import Console
-from operator_cli.core.models.context import ContextManager
 from operator_cli.core.utils import get_project_root, get_engine
 
 app = typer.Typer(

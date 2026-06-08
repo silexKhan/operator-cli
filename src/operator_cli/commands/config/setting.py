@@ -1,7 +1,6 @@
 import typer
 from rich.console import Console
 from rich.table import Table
-from operator_cli.core.models.context import ContextManager
 from operator_cli.core.utils import get_project_root
 
 app = typer.Typer(help="Configure Operator CLI settings.", rich_markup_mode="rich")
@@ -10,6 +9,8 @@ app = typer.Typer(help="Configure Operator CLI settings.", rich_markup_mode="ric
 def list_models():
     """List available local LLM models (Ollama)."""
     import ollama
+    from operator_cli.core.models.context import ContextManager
+
     console = Console()
     try:
         client = ollama.Client()
@@ -68,6 +69,8 @@ def list_models():
 @app.command(name="set-model")
 def set_model(model_name: str = typer.Argument(..., help="변경할 로컬 LLM 모델 이름")):
     """Set the default local LLM model."""
+    from operator_cli.core.models.context import ContextManager
+
     console = Console()
     PROJECT_ROOT = get_project_root()
     ctx_mgr = ContextManager(context_path=str(PROJECT_ROOT / ".operator_context.json"))
@@ -103,6 +106,8 @@ def set_model(model_name: str = typer.Argument(..., help="변경할 로컬 LLM �
 @app.command(name="graphify-delay")
 def set_graphify_delay(minutes: int = typer.Argument(..., help="Graphify 자동 업데이트 유예 시간 (분)")):
     """Set the delay for automatic Graphify updates after knowledge changes."""
+    from operator_cli.core.models.context import ContextManager
+
     console = Console()
     PROJECT_ROOT = get_project_root()
     ctx_mgr = ContextManager(context_path=str(PROJECT_ROOT / ".operator_context.json"))

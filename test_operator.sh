@@ -1,69 +1,99 @@
 #!/bin/bash
 
-# Operator CLI Integration Test Script
-# 이 스크립트는 지금까지 변경된 Operator CLI의 핵심 기능들이 정상 동작하는지 검증합니다.
+# Operator CLI smoke test.
+# Uses a temporary OPERATOR_HOME so tests never mutate the user's runtime state.
 
-export OPERATOR_HOME="/Users/silex/.operator"
-OPERATOR_CMD="/Users/silex/.operator/bin/operator"
+set -euo pipefail
 
-echo "=========================================="
-echo "🧪 Operator CLI Integration Test Started"
-echo "=========================================="
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+OPERATOR_CMD="${OPERATOR_CMD:-$PROJECT_ROOT/.venv/bin/operator}"
 
-echo -e "\n[Test 1] Version Check"
-$OPERATOR_CMD --version
-if [ $? -ne 0 ]; then echo "❌ Version check failed!"; exit 1; fi
+if [ ! -x "$OPERATOR_CMD" ]; then
+    echo "Error: operator command is not executable: $OPERATOR_CMD"
+    echo "Set OPERATOR_CMD=/path/to/operator to test a release binary."
+    exit 1
+fi
 
-echo -e "\n[Test 2] Help Menu Generation"
-$OPERATOR_CMD --help > /dev/null
-if [ $? -ne 0 ]; then echo "❌ Help menu failed!"; exit 1; else echo "✓ Help menu generated successfully."; fi
+TMP_OPERATOR_HOME="$(mktemp -d)"
+cleanup() {
+    rm -rf "$TMP_OPERATOR_HOME"
+}
+trap cleanup EXIT
 
-echo -e "\n[Test 3] Initial Status"
-$OPERATOR_CMD status
-if [ $? -ne 0 ]; then echo "❌ Initial status check failed!"; exit 1; fi
+cp -R "$PROJECT_ROOT/protocols" "$TMP_OPERATOR_HOME/protocols"
+export OPERATOR_HOME="$TMP_OPERATOR_HOME"
 
-echo -e "\n[Test 4] Connect to Matrix Circuit"
-$OPERATOR_CMD connect matrix > /dev/null
-if [ $? -ne 0 ]; then echo "❌ Connect to Matrix failed!"; exit 1; else echo "✓ Connected to Matrix."; fi
-
-echo -e "\n[Test 5] Status Verification (Matrix)"
-$OPERATOR_CMD status | grep "Active Circuit : matrix" > /dev/null
-if [ $? -ne 0 ]; then echo "❌ Status does not show Matrix!"; exit 1; else echo "✓ Status verified (Matrix)."; fi
-
-echo -e "\n[Test 6] Reconnect to Matrix Circuit"
-$OPERATOR_CMD connect matrix > /dev/null
-if [ $? -ne 0 ]; then echo "❌ Reconnect to Matrix failed!"; exit 1; else echo "✓ Reconnected to Matrix."; fi
-
-echo -e "\n[Test 7] Reset Context"
-$OPERATOR_CMD status reset > /dev/null
-if [ $? -ne 0 ]; then echo "❌ Status reset failed!"; exit 1; else echo "✓ Context reset successfully."; fi
-
-echo -e "\n[Test 8] Final Status Check (Disconnected)"
-$OPERATOR_CMD status | grep "Disconnected" > /dev/null
-if [ $? -ne 0 ]; then echo "❌ Status is not disconnected!"; exit 1; else echo "✓ Final status verified (Disconnected)."; fi
-
-echo -e "\n[Test 9] Graph Command Help"
-$OPERATOR_CMD graph --help > /dev/null
-if [ $? -ne 0 ]; then echo "❌ Graph help command failed!"; exit 1; else echo "✓ Graph help verified."; fi
-
-echo -e "\n[Test 10] Graphify Delay Setting"
-$OPERATOR_CMD setting graphify-delay 45 > /dev/null
-if [ $? -ne 0 ]; then echo "❌ Setting graphify-delay failed!"; exit 1; else echo "✓ Graphify delay set to 45 mins."; fi
-
-echo -e "\n[Test 11] Graph Run (Dry-run/Check basic execution)"
-# 유예 시간 체크 로직이 동작하는지 확인 (force 없이 실행 시 경고 문구가 나오거나 바로 실행됨)
-$OPERATOR_CMD graph run --help > /dev/null
-if [ $? -ne 0 ]; then echo "❌ Graph run command failed!"; exit 1; else echo "✓ Graph run command verified."; fi
-
-echo -e "\n[Test 12] Knowledge Open Help"
-$OPERATOR_CMD knowledge open --help > /dev/null
-if [ $? -ne 0 ]; then echo "❌ Knowledge open help command failed!"; exit 1; else echo "✓ Knowledge open help verified."; fi
-
-echo -e "\n[Test 13] Knowledge Open Execution (Dry-run with known ID)"
-# 실제로 파일을 열면 편집기가 뜨므로, 존재하지 않는 ID로 에러 핸들링이 잘 되는지 확인
-$OPERATOR_CMD knowledge open K-NONEXISTENT 2>&1 | grep "not found" > /dev/null
-if [ $? -ne 0 ]; then echo "❌ Knowledge open error handling failed!"; exit 1; else echo "✓ Knowledge open error handling verified."; fi
+CIRCUIT_PATH="$(find "$TMP_OPERATOR_HOME/protocols/circuits" -maxdepth 1 -type f -name '*.md' | sort | head -n 1)"
+if [ -z "$CIRCUIT_PATH" ]; then
+    echo "Error: no circuit files found under protocols/circuits."
+    exit 1
+fi
+CIRCUIT="$(basename "$CIRCUIT_PATH" .md)"
 
 echo "=========================================="
-echo "✅ All Integration Tests Passed!"
+echo "Operator CLI Smoke Test Started"
+echo "=========================================="
+echo "Operator command : $OPERATOR_CMD"
+echo "Temporary home   : $TMP_OPERATOR_HOME"
+echo "Circuit under test: $CIRCUIT"
+
+echo
+echo "[Test 1] Version Check"
+"$OPERATOR_CMD" --version
+
+echo
+echo "[Test 2] Help Menu Generation"
+"$OPERATOR_CMD" --help > /dev/null
+echo "OK: help menu generated."
+
+echo
+echo "[Test 3] Circuits Command"
+"$OPERATOR_CMD" circuits > /dev/null
+echo "OK: circuits listed."
+
+echo
+echo "[Test 4] Units Command"
+"$OPERATOR_CMD" units > /dev/null
+echo "OK: units listed."
+
+echo
+echo "[Test 5] Initial Status"
+"$OPERATOR_CMD" status > /dev/null
+echo "OK: status reported."
+
+echo
+echo "[Test 6] Doctor Diagnostics"
+"$OPERATOR_CMD" doctor --skip-ollama > /dev/null
+echo "OK: doctor reported."
+
+echo
+echo "[Test 7] Knowledge JSON Query"
+"$OPERATOR_CMD" knowledge query smoke --format json > /dev/null
+echo "OK: knowledge JSON query reported."
+
+echo
+echo "[Test 8] Graph Subcommand Help"
+"$OPERATOR_CMD" graph run --help > /dev/null
+"$OPERATOR_CMD" graph label --help > /dev/null
+"$OPERATOR_CMD" graph viz --help > /dev/null
+echo "OK: graph subcommands are registered."
+
+echo
+echo "[Test 9] Connect To Valid Circuit"
+"$OPERATOR_CMD" call "$CIRCUIT" > /dev/null
+echo "OK: connected to $CIRCUIT."
+
+echo
+echo "[Test 10] Status Verification"
+"$OPERATOR_CMD" status | grep "Active Circuit : $CIRCUIT" > /dev/null
+echo "OK: status shows $CIRCUIT."
+
+echo
+echo "[Test 11] Reset Context"
+"$OPERATOR_CMD" status reset > /dev/null
+"$OPERATOR_CMD" status | grep "Disconnected" > /dev/null
+echo "OK: context reset without touching user state."
+
+echo "=========================================="
+echo "All Operator CLI smoke tests passed."
 echo "=========================================="

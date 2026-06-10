@@ -14,6 +14,7 @@ src/operator_cli/commands/config/connect.py
 src/operator_cli/commands/config/setting.py
 src/operator_cli/commands/info/__init__.py
 src/operator_cli/commands/info/circuits.py
+src/operator_cli/commands/info/doctor.py
 src/operator_cli/commands/info/status.py
 src/operator_cli/commands/info/units.py
 src/operator_cli/commands/ops/__init__.py
@@ -40,3 +41,7 @@ src/operator_cli/llm/__init__.py
 src/operator_cli/llm/base.py
 src/operator_cli/llm/providers/__init__.py
 src/operator_cli/llm/providers/ollama.py
+tests/test_context_manager.py
+tests/test_knowledge_manager.py
+tests/test_protocol_cache.py
+tests/test_summarize.py

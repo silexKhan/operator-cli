@@ -32,7 +32,7 @@ class KnowledgeManager:
     저장, 로드 및 인덱싱하는 기능을 제공합니다.
     """
     
-    def __init__(self, base_path: Optional[Path] = None):
+    def __init__(self, base_path: Optional[Path] = None, ensure_directories: bool = True):
         """
         KnowledgeManager를 초기화합니다.
         
@@ -60,7 +60,8 @@ class KnowledgeManager:
                 # 2. 소스 코드 기동 중일 때는 항상 메인 프로젝트의 'knowledge'를 지향
                 self.base_path = project_root / "knowledge"
             
-        self._ensure_directories()
+        if ensure_directories:
+            self._ensure_directories()
 
     def _ensure_directories(self) -> None:
         """지식 저장소의 필수 디렉토리 구조가 존재하는지 확인하고 없으면 생성합니다."""
@@ -224,9 +225,80 @@ class KnowledgeManager:
                 
         return conflicts
 
+    def _extract_context(self, content: str, query: str) -> str:
+        query_lower = query.lower()
+        content_lower = content.lower()
+        idx = content_lower.find(query_lower)
+        if idx == -1:
+            return content[:120].replace("\n", " ").strip()
+
+        start = max(0, idx - 40)
+        end = min(len(content), idx + len(query) + 40)
+        return f"...{content[start:end]}..."
+
+    def _score_knowledge(self, metadata: KnowledgeMetadata, content: str, query: str) -> int:
+        query_lower = query.lower()
+        title = metadata.title.lower()
+        tags = [tag.lower() for tag in metadata.tags]
+        content_lower = content.lower()
+
+        score = 0
+        if query_lower == metadata.id.lower():
+            score += 100
+        if query_lower == title:
+            score += 80
+        elif query_lower in title:
+            score += 50
+        for tag in tags:
+            if query_lower == tag:
+                score += 40
+            elif query_lower in tag:
+                score += 20
+        if query_lower in content_lower:
+            score += 10
+            score += min(content_lower.count(query_lower), 10)
+        return score
+
+    def search_knowledge(self, query: str) -> List[dict]:
+        """
+        지식 베이스에서 title/tags/content/id 가중치 기반으로 검색합니다.
+
+        Args:
+            query (str): 검색어.
+
+        Returns:
+            List[dict]: score, metadata, context, path를 포함한 검색 결과.
+        """
+        results = []
+        all_metadata = self.list_knowledge()
+
+        for meta in all_metadata:
+            _, content = self.load_knowledge(meta.category, meta.id)
+            if content is None:
+                continue
+
+            score = self._score_knowledge(meta, content, query)
+            if score <= 0:
+                continue
+
+            results.append(
+                {
+                    "score": score,
+                    "metadata": meta,
+                    "context": self._extract_context(content, query),
+                    "path": str(self.get_knowledge_path(meta.category, f"{meta.id}.md")),
+                }
+            )
+
+        return sorted(
+            results,
+            key=lambda item: (item["score"], item["metadata"].updated_at),
+            reverse=True,
+        )
+
     def query_knowledge(self, query: str) -> List[tuple[KnowledgeMetadata, str]]:
         """
-        지식 베이스에서 텍스트를 검색합니다. (단순 부분 일치 검색)
+        지식 베이스에서 텍스트를 검색합니다. 기존 호출부 호환을 위해 (metadata, context) 쌍을 반환합니다.
         
         Args:
             query (str): 검색어.
@@ -234,20 +306,51 @@ class KnowledgeManager:
         Returns:
             List[tuple[KnowledgeMetadata, str]]: 검색 결과 (메타데이터, 일치하는 부분의 컨텍스트).
         """
-        results = []
-        all_metadata = self.list_knowledge()
-        
-        for meta in all_metadata:
-            _, content = self.load_knowledge(meta.category, meta.id)
-            if content and query.lower() in content.lower():
-                # 간단한 컨텍스트 추출 (첫 번째 일치 항목 주변 100자)
-                idx = content.lower().find(query.lower())
-                start = max(0, idx - 40)
-                end = min(len(content), idx + len(query) + 40)
-                context = f"...{content[start:end]}..."
-                results.append((meta, context))
-                
-        return results
+        return [
+            (result["metadata"], result["context"])
+            for result in self.search_knowledge(query)
+        ]
+
+    def diagnose(self) -> List[dict]:
+        """
+        OAKS 저장소의 기본 무결성을 점검합니다.
+
+        Returns:
+            List[dict]: check, status, detail 필드를 가진 진단 결과.
+        """
+        diagnostics = []
+        for category in ["basement", "library", "proposals"]:
+            category_path = self.base_path / category
+            status = "PASS" if category_path.exists() else "FAIL"
+            detail = str(category_path) if category_path.exists() else f"Missing {category_path}"
+            diagnostics.append({"check": f"{category} directory", "status": status, "detail": detail})
+
+        for index_name in ["llms.txt", "llms-full.txt"]:
+            index_path = self.base_path.parent / index_name
+            status = "PASS" if index_path.exists() else "WARN"
+            detail = str(index_path) if index_path.exists() else f"Missing {index_path}"
+            diagnostics.append({"check": index_name, "status": status, "detail": detail})
+
+        parse_failures = []
+        for category in ["basement", "library", "proposals"]:
+            for file_path in (self.base_path / category).glob("*.md"):
+                metadata, _ = self.load_knowledge(category, file_path.stem)
+                if metadata is None:
+                    parse_failures.append(str(file_path))
+
+        if parse_failures:
+            diagnostics.append(
+                {
+                    "check": "metadata parse",
+                    "status": "FAIL",
+                    "detail": f"{len(parse_failures)} file(s) failed metadata parse",
+                    "files": parse_failures,
+                }
+            )
+        else:
+            diagnostics.append({"check": "metadata parse", "status": "PASS", "detail": "All knowledge metadata parsed"})
+
+        return diagnostics
 
     def approve_proposal(self, proposal_id: str) -> Path:
         """

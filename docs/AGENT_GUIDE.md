@@ -9,26 +9,33 @@
 - `operator status`: 현재 활성 회선(Circuit) 및 로드된 프로토콜 상태 확인.
 - `operator agent "명령" [-t level]`: LLM을 통해 명령 분석 및 쉘 커맨드 제안.
 - `operator call <circuit>`: 특정 프로젝트 노드로 전환 (예: matrix, research).
+- `operator doctor [--skip-ollama]`: runtime 파일, protocol, context, knowledge index, Ollama 연결 상태 점검.
+- `operator graph <subcommand>`: Graphify 구조 분석 파이프라인 사용.
+  - `run [--no-label] [--no-viz]`: graphify 추출/갱신 실행.
+  - `label`: 기존 graph 산출물에 LLM community label 생성.
+  - `viz`: 기존 graph 산출물에서 HTML 시각화 생성.
+  - `open [--html]`: graph report 또는 HTML 열기.
 - `operator knowledge <subcommand>`: OAKS 지식 관리 시스템 사용.
-  - `query <keyword>`: 검증된 지식 검색.
+  - `query <keyword> [--format json]`: 검증된 지식 검색.
   - `propose "<text>"`: 새로운 지식 제안.
   - `list`: 전체 지식 목록 조회.
   - `approve <id>`: 제안된 지식 승인 및 라이브러리 이동.
+  - `doctor [--format json]`: OAKS 저장소 무결성 점검.
   - `refresh`: `llms.txt` 인덱스 동기화.
 - `operator summarize`: 최근 작업 이력을 `MEMORY.md`에 구조적으로 요약 기록.
 - `operator setting set-model <model_name>`: 사용할 로컬 모델 변경.
 
 ## 3. 가용 회선 및 유닛 (Available Resources)
 ### 회선 (Circuits)
-- **matrix**
-- **research**
+- **matrix**: Matrix 오퍼레이터 코어 엔진 및 백엔드 관리 프로젝트
+- **research**: 기획, 기술, 프로세스 심층 분석 및 탐구 전용 회선
 
 ### 유닛 (Units)
-- **markdown**
-- **planning**
-- **python**
-- **sentinel**
-- **swift**
+- **markdown**: 마크다운 문서 구조적 무결성 및 가독성 규약 (Hierarchy, Literal Specification)
+- **planning**: 기획 문서 정합성 및 단계별 상세 구현 규약 (Logic-First, Incremental Writing)
+- **python**: 파이썬 전용 Clean Architecture 기술 규약 (Dumb Controller, Strict Schema)
+- **sentinel**: 지휘 유닛 전용 자율 7단계 파이프라인 집행 및 품질 보증 규약
+- **swift**: SwiftUI 기반 iOS/macOS 네이티브 개발 및 타입 안정성 규약
 
 ## 4. 핵심 프로토콜 (Global Core Protocols)
 오퍼레이터는 다음의 글로벌 규약을 절대적으로 준수합니다:
@@ -50,3 +57,6 @@
 1. `operator status`로 현재 환경을 파악합니다.
 2. `operator agent`를 사용하여 복잡한 쉘 명령어나 아키텍처 결정을 제안받습니다.
 3. 작업 완료 후 `operator summarize`를 실행하여 기억을 영속화합니다.
+
+## 6. 공개/비공개 회선 정책
+이 문서는 개발 저장소의 public `protocols/`만 기준으로 생성합니다. Runtime home(`OPERATOR_HOME`)에 있는 개인 회선은 공개 가이드에 포함하지 않습니다.

@@ -1,17 +1,27 @@
-import os
 import sys
 from pathlib import Path
 
-# 소스 경로 추가 (src layout 대응)
-sys.path.append(str(Path(__file__).parent.parent / "src"))
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
-from operator_cli.core.utils import get_circuit_names, get_unit_names, get_project_root
+# 소스 경로 추가 (src layout 대응)
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
+
 from operator_cli.core.protocol.engine import ProtocolEngine
+
+
+def _format_resources(items):
+    if not items:
+        return "- None"
+    return "\n".join(
+        f"- **{item['name']}**: {item['description']}"
+        for item in items
+    )
+
 
 def generate_guide(output_path: Path):
     """Generates a guide for other AI agents to understand Operator CLI."""
     
-    protocols_dir = get_project_root() / "protocols"
+    protocols_dir = PROJECT_ROOT / "protocols"
     engine = ProtocolEngine(protocols_dir)
     
     guide_content = """# AI Agent Guide for Operator CLI
@@ -25,11 +35,18 @@ def generate_guide(output_path: Path):
 - `operator status`: 현재 활성 회선(Circuit) 및 로드된 프로토콜 상태 확인.
 - `operator agent "명령" [-t level]`: LLM을 통해 명령 분석 및 쉘 커맨드 제안.
 - `operator call <circuit>`: 특정 프로젝트 노드로 전환 (예: matrix, research).
+- `operator doctor [--skip-ollama]`: runtime 파일, protocol, context, knowledge index, Ollama 연결 상태 점검.
+- `operator graph <subcommand>`: Graphify 구조 분석 파이프라인 사용.
+  - `run [--no-label] [--no-viz]`: graphify 추출/갱신 실행.
+  - `label`: 기존 graph 산출물에 LLM community label 생성.
+  - `viz`: 기존 graph 산출물에서 HTML 시각화 생성.
+  - `open [--html]`: graph report 또는 HTML 열기.
 - `operator knowledge <subcommand>`: OAKS 지식 관리 시스템 사용.
-  - `query <keyword>`: 검증된 지식 검색.
+  - `query <keyword> [--format json]`: 검증된 지식 검색.
   - `propose "<text>"`: 새로운 지식 제안.
   - `list`: 전체 지식 목록 조회.
   - `approve <id>`: 제안된 지식 승인 및 라이브러리 이동.
+  - `doctor [--format json]`: OAKS 저장소 무결성 점검.
   - `refresh`: `llms.txt` 인덱스 동기화.
 - `operator summarize`: 최근 작업 이력을 `MEMORY.md`에 구조적으로 요약 기록.
 - `operator setting set-model <model_name>`: 사용할 로컬 모델 변경.
@@ -50,10 +67,13 @@ def generate_guide(output_path: Path):
 1. `operator status`로 현재 환경을 파악합니다.
 2. `operator agent`를 사용하여 복잡한 쉘 명령어나 아키텍처 결정을 제안받습니다.
 3. 작업 완료 후 `operator summarize`를 실행하여 기억을 영속화합니다.
+
+## 6. 공개/비공개 회선 정책
+이 문서는 개발 저장소의 public `protocols/`만 기준으로 생성합니다. Runtime home(`OPERATOR_HOME`)에 있는 개인 회선은 공개 가이드에 포함하지 않습니다.
 """
     
-    circuits = "\n".join([f"- **{c}**" for c in get_circuit_names()])
-    units = "\n".join([f"- **{u}**" for u in get_unit_names()])
+    circuits = _format_resources(engine.get_all_circuits())
+    units = _format_resources(engine.get_all_units())
     
     global_proto = engine.load_global_protocol()
     # Remove LITERAL tags for cleaner guide
@@ -65,10 +85,10 @@ def generate_guide(output_path: Path):
         global_protocols=global_proto
     )
     
+    output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(formatted_guide, encoding="utf-8")
     print(f"SUCCESS: AGENT_GUIDE.md generated at {output_path}")
 
 if __name__ == "__main__":
-    PROJECT_ROOT = Path(__file__).parent.parent
     target_path = PROJECT_ROOT / "docs" / "AGENT_GUIDE.md"
     generate_guide(target_path)

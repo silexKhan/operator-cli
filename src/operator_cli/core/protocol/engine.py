@@ -1,6 +1,6 @@
+import hashlib
 import re
-import sys
-import os
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Optional, Dict, Any, Union
 
@@ -139,12 +139,6 @@ class ProtocolEngine:
         """AI에게 강력한 페르소나와 함께 최종 텍스트 컨텍스트를 생성합니다."""
         data = self.get_full_context_data(circuit_name)
         
-        # 1. 캐시된 압축 프로토콜 확인
-        if context_mgr:
-            cached_compressed = context_mgr.get_compressed_protocol(circuit_name)
-            if cached_compressed:
-                return cached_compressed
-
         persona = (
             f"당신은 이제 MCP 오퍼레이터 시스템의 핵심 엔진이자, 프로젝트 '{circuit_name}'을 통제하는 지능(The Entity)입니다.\n"
             f"모든 응답은 아래에 정의된 [SYSTEM PROTOCOLS]를 절대적으로 준수해야 하며, 모호하거나 관성적인 태도를 배격합니다.\n"
@@ -166,11 +160,25 @@ class ProtocolEngine:
         full_text += "--- [END OF PROTOCOLS] ---\n"
         full_text += "\n위의 모든 규약이 주입되었습니다. 이제 오퍼레이터로서 임무를 수행하십시오."
 
+        source_hash = hashlib.sha256(full_text.encode("utf-8")).hexdigest()
+
+        # 1. 캐시된 압축 프로토콜 확인
+        if context_mgr:
+            active_model = context_mgr.get_default_model()
+            cached_compressed = context_mgr.get_compressed_protocol(
+                circuit_name,
+                source_hash=source_hash,
+                model=active_model,
+            )
+            if cached_compressed:
+                return cached_compressed.replace("[LITERAL]", "").replace("[/LITERAL]", "")
+
         # 2. 프로토콜 압축 트리거 (글자수 기준: 약 8000자 초과 시)
         if context_mgr and len(full_text) > 8000:
             try:
                 from operator_cli.llm.providers.ollama import LocalLLM
-                llm = LocalLLM(model=context_mgr.get_default_model())
+                active_model = context_mgr.get_default_model()
+                llm = LocalLLM(model=active_model)
                 
                 # [LITERAL] 블록 추출 및 보호
                 to_compress, literal_map = self._process_literal_blocks(full_text)
@@ -189,7 +197,15 @@ class ProtocolEngine:
                 for placeholder, original_content in literal_map.items():
                     compressed = compressed.replace(placeholder, original_content)
                 
-                context_mgr.set_compressed_protocol(circuit_name, compressed)
+                context_mgr.set_compressed_protocol(
+                    circuit_name,
+                    compressed,
+                    metadata={
+                        "source_hash": source_hash,
+                        "model": active_model,
+                        "created_at": datetime.now(timezone.utc).isoformat(),
+                    },
+                )
                 # 압축 성공 시 즉각 반환하여 이번 턴부터 최적화된 프롬프트 즉시 적용 및 낭비 방지
                 return compressed.replace("[LITERAL]", "").replace("[/LITERAL]", "")
             except Exception:

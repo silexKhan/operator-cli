@@ -1,5 +1,12 @@
 import sys
-import os
+from typing import Optional
+
+__version__ = "0.1.3"
+
+if len(sys.argv) > 1 and sys.argv[1] in {"--version", "-v"}:
+    print(f"Operator CLI Version: {__version__}")
+    raise SystemExit(0)
+
 import typer
 from operator_cli.core.utils import get_circuit_names, get_unit_names
 
@@ -11,8 +18,6 @@ if sys.platform == "win32":
         sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
     except Exception:
         pass
-
-__version__ = "0.1.3"
 
 def get_tree_str(items, color="gold1"):
     """도움말용 트리 구조 문자열 생성 (ASCII Safe)"""
@@ -44,7 +49,7 @@ def agent_cmd(
 
 @app.command(name="summarize", help="Memory Management & Compaction.")
 def summarize_cmd(
-    circuit: str = typer.Argument(None, help="압축할 회선 이름"),
+    circuit: Optional[str] = typer.Argument(None, help="압축할 회선 이름"),
     force: bool = typer.Option(False, "--force", "-f", help="강제 압축 실행")
 ):
     from operator_cli.commands.ops.summarize import summarize
@@ -57,12 +62,21 @@ def call_cmd(
     from operator_cli.commands.ops.run import call
     return call(node)
 
+@app.command(name="doctor", help="Run Operator environment diagnostics.")
+def doctor_cmd(
+    skip_ollama: bool = typer.Option(False, "--skip-ollama", help="Ollama 연결 점검을 건너뜁니다."),
+    strict: bool = typer.Option(False, "--strict", help="경고가 있어도 실패 코드로 종료합니다.")
+):
+    from operator_cli.commands.info.doctor import doctor
+    return doctor(skip_ollama, strict)
+
 # 2. KNOWLEDGE MANAGEMENT
 knowledge_items = [
-    "query       [grey50](Search verified knowledge base)[/grey50]",
+    "query       [grey50](Search verified knowledge base; supports --format json)[/grey50]",
     "list        [grey50](List all verified/proposed items)[/grey50]",
     "propose     [grey50](Extract and propose new knowledge)[/grey50]",
     "approve     [grey50](Review and approve proposals)[/grey50]",
+    "doctor      [grey50](Check OAKS store integrity)[/grey50]",
     "refresh     [grey50](Refresh llms.txt index)[/grey50]"
 ]
 import operator_cli.commands.ops.knowledge as knowledge
@@ -74,7 +88,9 @@ app.add_typer(
 
 # 3. GRAPH MANAGEMENT
 graph_items = [
-    "run         [grey50](Run graphify to build/update knowledge graph)[/grey50]",
+    "run         [grey50](Run graphify extraction/update)[/grey50]",
+    "label       [grey50](Generate community labels from existing graph output)[/grey50]",
+    "viz         [grey50](Generate graph.html from existing graph output)[/grey50]",
     "open        [grey50](Open graph report or interactive HTML)[/grey50]"
 ]
 import operator_cli.commands.ops.graph as graph
@@ -85,8 +101,17 @@ app.add_typer(
 )
 
 # 4. SETTING (Configuration)
+setting_items = [
+    "models          [grey50](List available local LLM models (Ollama))[/grey50]",
+    "set-model       [grey50](Set the default local LLM model)[/grey50]",
+    "graphify-delay  [grey50](Set the delay for automatic Graphify updates after knowledge changes)[/grey50]"
+]
 from operator_cli.commands.config import setting
-app.add_typer(setting.app, name="setting", help="Configure Operator CLI settings.")
+app.add_typer(
+    setting.app,
+    name="setting",
+    help=f"Configure Operator CLI settings.{get_tree_str(setting_items, 'khaki1')}"
+)
 
 # 5. Information Commands
 from operator_cli.commands.info import status, circuits, units

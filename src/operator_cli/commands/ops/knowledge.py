@@ -1,4 +1,5 @@
 import typer
+import json
 from typing import Optional
 from rich.console import Console
 from rich.table import Table
@@ -9,7 +10,8 @@ console = Console()
 
 @app.command(name="query")
 def query_knowledge(
-    keyword: str = typer.Argument(..., help="검색할 키워드")
+    keyword: str = typer.Argument(..., help="검색할 키워드"),
+    output_format: str = typer.Option("table", "--format", "-f", help="출력 형식: table 또는 json")
 ):
     """
     [bold cyan]지식 검색[/bold cyan]
@@ -17,21 +19,40 @@ def query_knowledge(
     """
     from operator_cli.core.knowledge.manager import KnowledgeManager
 
-    manager = KnowledgeManager()
-    results = manager.query_knowledge(keyword)
+    manager = KnowledgeManager(ensure_directories=False)
+    results = manager.search_knowledge(keyword)
+
+    if output_format == "json":
+        payload = [
+            {
+                "score": result["score"],
+                "metadata": result["metadata"].model_dump(mode="json"),
+                "context": result["context"],
+                "path": result["path"],
+            }
+            for result in results
+        ]
+        console.print(json.dumps(payload, ensure_ascii=False, indent=2))
+        return
+
+    if output_format != "table":
+        console.print(f"[bold red]Error:[/bold red] Unsupported format '{output_format}'. Use 'table' or 'json'.")
+        raise typer.Exit(1)
     
     if not results:
         console.print(f"[yellow]'{keyword}'에 대한 검색 결과가 없습니다.[/yellow]")
         return
 
     table = Table(title=f"Knowledge Search Results: {keyword}", show_header=True, header_style="bold magenta")
+    table.add_column("Score", style="yellow", width=7)
     table.add_column("ID", style="dim", width=12)
     table.add_column("Category", style="cyan")
     table.add_column("Title", style="green")
     table.add_column("Context", style="white")
 
-    for meta, context in results:
-        table.add_row(meta.id, meta.category, meta.title, context)
+    for result in results:
+        meta = result["metadata"]
+        table.add_row(str(result["score"]), meta.id, meta.category, meta.title, result["context"])
 
     console.print(table)
 
@@ -45,7 +66,7 @@ def list_knowledge(
     """
     from operator_cli.core.knowledge.manager import KnowledgeManager
 
-    manager = KnowledgeManager()
+    manager = KnowledgeManager(ensure_directories=False)
     knowledges = manager.list_knowledge(category=category)
     
     table = Table(title="OAKS Knowledge Library", show_header=True, header_style="bold magenta")
@@ -192,4 +213,38 @@ def refresh_wiki():
         console.print(f"[bold green]{S_OK} Success:[/bold green] llms.txt and llms-full.txt have been refreshed.")
     except Exception as e:
         console.print(f"[bold red]Error:[/bold red] {str(e)}")
+        raise typer.Exit(1)
+
+@app.command(name="doctor")
+def doctor_knowledge(
+    output_format: str = typer.Option("table", "--format", "-f", help="출력 형식: table 또는 json"),
+    strict: bool = typer.Option(False, "--strict", help="경고가 있어도 실패 코드로 종료합니다.")
+):
+    """
+    [bold cyan]OAKS 진단[/bold cyan]
+    지식 저장소 디렉토리, 인덱스, 메타데이터 파싱 상태를 점검합니다.
+    """
+    from operator_cli.core.knowledge.manager import KnowledgeManager
+
+    manager = KnowledgeManager(ensure_directories=False)
+    diagnostics = manager.diagnose()
+
+    if output_format == "json":
+        console.print(json.dumps(diagnostics, ensure_ascii=False, indent=2))
+    elif output_format == "table":
+        table = Table(title="OAKS Doctor", show_header=True, header_style="bold magenta")
+        table.add_column("Check", style="white")
+        table.add_column("Status", style="cyan", width=8)
+        table.add_column("Detail", style="dim", overflow="fold")
+
+        for item in diagnostics:
+            table.add_row(item["check"], item["status"], item["detail"])
+        console.print(table)
+    else:
+        console.print(f"[bold red]Error:[/bold red] Unsupported format '{output_format}'. Use 'table' or 'json'.")
+        raise typer.Exit(1)
+
+    has_failures = any(item["status"] == "FAIL" for item in diagnostics)
+    has_warnings = any(item["status"] == "WARN" for item in diagnostics)
+    if has_failures or (strict and has_warnings):
         raise typer.Exit(1)

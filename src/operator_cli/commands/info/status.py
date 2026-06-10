@@ -32,6 +32,16 @@ def status():
     if active_circuit:
         console.print(f"Active Circuit : [bold green]{active_circuit}[/bold green]")
         console.print(f"Protocol Mode  : [cyan]Enabled[/cyan]")
+        cache_metadata = ctx_mgr.get_compressed_protocol_metadata(active_circuit)
+        if cache_metadata:
+            console.print(
+                "Protocol Cache : "
+                f"[cyan]compressed[/cyan] "
+                f"(model={cache_metadata.get('model', 'unknown')}, "
+                f"created={cache_metadata.get('created_at', 'unknown')})"
+            )
+        else:
+            console.print("Protocol Cache : [dim]raw/no valid cache[/dim]")
         
         from rich.panel import Panel
         from rich.text import Text

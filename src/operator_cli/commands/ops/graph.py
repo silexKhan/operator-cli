@@ -1,6 +1,7 @@
 import typer
 import subprocess
 import json
+import shutil
 from pathlib import Path
 from datetime import datetime
 from rich.console import Console
@@ -8,6 +9,41 @@ from operator_cli.core.utils import get_project_root, S_OK, S_ERR
 
 app = typer.Typer(rich_markup_mode="rich")
 console = Console()
+
+
+def get_graph_project_root() -> Path:
+    project_root = get_project_root()
+    if not (project_root / ".venv").exists() and "release" in str(project_root):
+        return project_root.parent.parent
+    return project_root
+
+
+def get_graphify_base_command(project_root: Path) -> list[str] | None:
+    venv_python = project_root / ".venv" / "bin" / "python3"
+    if venv_python.exists():
+        return [str(venv_python), "-m", "graphify"]
+
+    graphify_bin = shutil.which("graphify")
+    if graphify_bin:
+        return [graphify_bin]
+
+    return None
+
+
+def run_subprocess(command: list[str], project_root: Path, quiet: bool = False) -> int:
+    stdout = subprocess.DEVNULL if quiet else None
+    result = subprocess.run(command, cwd=project_root, stdout=stdout)
+    return result.returncode
+
+
+def generate_visualization(project_root: Path) -> bool:
+    base_cmd = get_graphify_base_command(project_root)
+    if not base_cmd:
+        console.print(f"[bold red]{S_ERR} Error:[/bold red] 'graphify' not found in .venv or PATH.")
+        return False
+
+    console.print(f"[bold blue]🎨 Generating visualization (graph.html)...[/bold blue]")
+    return run_subprocess(base_cmd + ["cluster-only", "."], project_root, quiet=True) == 0
 
 def label_communities(project_root: Path, ctx_mgr):
     """로컬 LLM(Ollama)을 사용하여 커뮤니티 이름을 자동으로 생성합니다."""
@@ -79,7 +115,8 @@ def label_communities(project_root: Path, ctx_mgr):
 def graph_run(
     update: bool = typer.Option(False, "--update", "-u", help="변경사항만 증분 갱신합니다."),
     deep: bool = typer.Option(False, "--deep", "-d", help="딥 모드로 상세 분석을 수행합니다."),
-    no_viz: bool = typer.Option(False, "--no-viz", help="시각화 HTML 생성을 건너뜜"),
+    label: bool = typer.Option(True, "--label/--no-label", help="LLM 기반 community labeling 실행 여부"),
+    viz: bool = typer.Option(True, "--viz/--no-viz", help="시각화 HTML 생성 여부"),
     force: bool = typer.Option(False, "--force", "-f", help="유예 시간을 무시하고 강제 실행")
 ):
     """
@@ -89,12 +126,7 @@ def graph_run(
     """
     from operator_cli.core.models.context import ContextManager
 
-    project_root = get_project_root()
-    
-    # 릴리즈 폴더 내 실행 시 상위 탐색 보완
-    potential_venv = project_root / ".venv"
-    if not potential_venv.exists() and "release" in str(project_root):
-        project_root = project_root.parent.parent
+    project_root = get_graph_project_root()
         
     ctx_mgr = ContextManager(context_path=str(project_root / ".operator_context.json"))
     
@@ -118,17 +150,10 @@ def graph_run(
     console.print(f"[bold blue]🚀 Running Graphify at:[/bold blue] {project_root}")
     
     try:
-        venv_python = project_root / ".venv" / "bin" / "python3"
-        if venv_python.exists():
-            cmd = [str(venv_python), "-m", "graphify"]
-        else:
-            import shutil
-            graphify_bin = shutil.which("graphify")
-            if graphify_bin:
-                cmd = [graphify_bin]
-            else:
-                console.print(f"[bold red]{S_ERR} Error:[/bold red] 'graphify' not found in .venv or PATH.")
-                return
+        cmd = get_graphify_base_command(project_root)
+        if not cmd:
+            console.print(f"[bold red]{S_ERR} Error:[/bold red] 'graphify' not found in .venv or PATH.")
+            return
 
         if update:
             cmd.extend(["update", "."])
@@ -140,25 +165,52 @@ def graph_run(
 
         if deep:
             cmd.extend(["--mode", "deep"])
-        if no_viz:
+        if not viz:
             cmd.append("--no-viz")
 
-        result = subprocess.run(cmd, cwd=project_root)
-        if result.returncode == 0:
-            # 1. 로컬 LLM을 통한 커뮤니티 레이블링
-            label_communities(project_root, ctx_mgr)
+        exit_code = run_subprocess(cmd, project_root)
+        if exit_code == 0:
+            if label:
+                label_communities(project_root, ctx_mgr)
             
-            # 2. 시각화 파일(HTML) 강제 생성 (cluster-only)
-            if not no_viz:
-                console.print(f"[bold blue]🎨 Generating visualization (graph.html)...[/bold blue]")
-                viz_cmd = cmd[:3] + ["cluster-only", "."]
-                subprocess.run(viz_cmd, cwd=project_root, stdout=subprocess.DEVNULL)
+            if viz:
+                generate_visualization(project_root)
                 
             console.print(f"[bold green]{S_OK} Graphify completed successfully![/bold green]")
         else:
-            console.print(f"[bold red]{S_ERR} Graphify failed with exit code {result.returncode}[/bold red]")
+            console.print(f"[bold red]{S_ERR} Graphify failed with exit code {exit_code}[/bold red]")
     except Exception as e:
         console.print(f"[bold red]Error:[/bold red] {str(e)}")
+
+
+@app.command(name="label")
+def graph_label():
+    """
+    [bold cyan]Graphify community label 생성[/bold cyan]
+    기존 graphify 산출물을 기반으로 LLM community label만 갱신합니다.
+    """
+    from operator_cli.core.models.context import ContextManager
+
+    project_root = get_graph_project_root()
+    ctx_mgr = ContextManager(context_path=str(project_root / ".operator_context.json"))
+
+    if label_communities(project_root, ctx_mgr):
+        console.print(f"[bold green]{S_OK} Graphify community labels updated.[/bold green]")
+    else:
+        console.print(f"[yellow]No Graphify labels were updated.[/yellow]")
+
+
+@app.command(name="viz")
+def graph_viz():
+    """
+    [bold cyan]Graphify 시각화 생성[/bold cyan]
+    기존 graphify 산출물을 기반으로 graph.html만 생성합니다.
+    """
+    project_root = get_graph_project_root()
+    if generate_visualization(project_root):
+        console.print(f"[bold green]{S_OK} Graphify visualization generated.[/bold green]")
+    else:
+        raise typer.Exit(1)
 
 @app.command(name="open")
 def graph_open(

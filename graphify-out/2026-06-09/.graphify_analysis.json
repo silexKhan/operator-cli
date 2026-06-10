@@ -1,0 +1,220 @@
+{
+  "communities": {
+    "0": [
+      "agent_guide",
+      "build_yml",
+      "core_engine_analysis",
+      "knowledge_system_design",
+      "llms",
+      "llms_full",
+      "llms_passive",
+      "llms_system",
+      "memory",
+      "readme"
+    ],
+    "1": [
+      "global_project_protocols",
+      "k-ca6d18ee_oaks",
+      "markdown_unit",
+      "planning_unit",
+      "python_unit",
+      "research_protocols",
+      "sentinel_unit"
+    ],
+    "2": [
+      "k-1f22bb3d_company",
+      "k-8eb2ddfd_technology",
+      "k-fc4d42de_strategy"
+    ],
+    "3": [
+      "knowledge_library_k-5241f24a",
+      "knowledge_library_k-72a7e396",
+      "knowledge_proposals_k-ca6d18ee"
+    ],
+    "4": [
+      "protocols_units_python_md_python",
+      "protocols_units_sentinel_md_sentinel",
+      "release_operator_mac_agent_guide_md_operator"
+    ],
+    "5": [
+      "k-5241f24a_oaks",
+      "k-72a7e396_oaks"
+    ],
+    "6": [
+      "k_fc4d42de",
+      "knowledge_index"
+    ],
+    "7": [
+      "knowledge_library_k-1f22bb3d",
+      "knowledge_library_k-8eb2ddfd"
+    ],
+    "8": [
+      "protocols_units_markdown",
+      "protocols_units_planning"
+    ],
+    "9": [
+      "abc"
+    ],
+    "10": [
+      "basemodel"
+    ],
+    "11": [
+      "protocols_global"
+    ],
+    "12": [
+      "protocols_circuits_mcp"
+    ],
+    "13": [
+      "protocols_circuits_gdr"
+    ],
+    "14": [
+      "protocols_circuits_research"
+    ],
+    "15": [
+      "protocols_units_swift"
+    ],
+    "16": [
+      "mcp_circuit_protocols"
+    ],
+    "17": [
+      "gdr_circuit_protocols"
+    ],
+    "18": [
+      "swift_unit"
+    ]
+  },
+  "cohesion": {
+    "0": 0.3333333333333333,
+    "1": 0.3333333333333333,
+    "2": 1.0,
+    "3": 0.6666666666666666,
+    "4": 1.6666666666666667,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0,
+    "9": 1.0,
+    "10": 1.0,
+    "11": 1.0,
+    "12": 1.0,
+    "13": 1.0,
+    "14": 1.0,
+    "15": 1.0,
+    "16": 1.0,
+    "17": 1.0,
+    "18": 1.0
+  },
+  "gods": [
+    {
+      "id": "readme",
+      "label": "Operator CLI Documentation",
+      "degree": 7
+    },
+    {
+      "id": "knowledge_system_design",
+      "label": "OAKS Knowledge System Design Plan",
+      "degree": 6
+    },
+    {
+      "id": "global_project_protocols",
+      "label": "Global Project Protocols",
+      "degree": 6
+    },
+    {
+      "id": "llms",
+      "label": "LLM System/Knowledge Base",
+      "degree": 4
+    },
+    {
+      "id": "protocols_units_python_md_python",
+      "label": "Python Unit Protocols",
+      "degree": 4
+    },
+    {
+      "id": "protocols_units_sentinel_md_sentinel",
+      "label": "Sentinel Unit Protocols",
+      "degree": 4
+    },
+    {
+      "id": "memory",
+      "label": "Session Memory Log",
+      "degree": 3
+    },
+    {
+      "id": "agent_guide",
+      "label": "AI Agent Guide for Operator CLI",
+      "degree": 3
+    },
+    {
+      "id": "core_engine_analysis",
+      "label": "Core Engine Analysis Report",
+      "degree": 3
+    },
+    {
+      "id": "llms_system",
+      "label": "OAKS System Overview and Functionality",
+      "degree": 2
+    }
+  ],
+  "surprises": [
+    {
+      "source": "OAKS Knowledge System Design Plan",
+      "target": "OAKS Knowledge Index",
+      "source_files": [
+        "docs/KNOWLEDGE_SYSTEM_DESIGN.md",
+        "knowledge/index.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "conceptually_related_to",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities; peripheral node `OAKS Knowledge Index` unexpectedly reaches hub `OAKS Knowledge System Design Plan`"
+    },
+    {
+      "source": "OAKS System Overview and Functionality",
+      "target": "Operator CLI Documentation",
+      "source_files": [
+        "llms-full.txt",
+        "README.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "conceptually_related_to",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `OAKS System Overview and Functionality` unexpectedly reaches hub `Operator CLI Documentation`"
+    },
+    {
+      "source": "Multi-Platform Build Workflow",
+      "target": "Operator CLI Documentation",
+      "source_files": [
+        ".github/workflows/build.yml",
+        "README.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "conceptually_related_to",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `Multi-Platform Build Workflow` unexpectedly reaches hub `Operator CLI Documentation`"
+    },
+    {
+      "source": "OAKS System Overview and Functionality",
+      "target": "OAKS Knowledge System Design Plan",
+      "source_files": [
+        "llms-full.txt",
+        "docs/KNOWLEDGE_SYSTEM_DESIGN.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "conceptually_related_to",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `OAKS System Overview and Functionality` unexpectedly reaches hub `OAKS Knowledge System Design Plan`"
+    },
+    {
+      "source": "OAKS Knowledge System Design Plan",
+      "target": "LLM Full Knowledge Base",
+      "source_files": [
+        "docs/KNOWLEDGE_SYSTEM_DESIGN.md",
+        "llms-full.txt"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `LLM Full Knowledge Base` unexpectedly reaches hub `OAKS Knowledge System Design Plan`"
+    }
+  ],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}

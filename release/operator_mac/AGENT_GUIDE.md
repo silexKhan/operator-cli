@@ -27,15 +27,18 @@
 
 ## 3. 가용 회선 및 유닛 (Available Resources)
 ### 회선 (Circuits)
+- **flight_sim**: Ball Flight Simulator Circuit
+- **gdr**: GDR 프로젝트 메인 회선
 - **matrix**: Matrix 오퍼레이터 코어 엔진 및 백엔드 관리 프로젝트
 - **research**: 기획, 기술, 프로세스 심층 분석 및 탐구 전용 회선
+- **teum**: 틈(Teum) 휴식/알림 앱 프로젝트
 
 ### 유닛 (Units)
-- **markdown**: 마크다운 문서 구조적 무결성 및 가독성 규약 (Hierarchy, Literal Specification)
-- **planning**: 기획 문서 정합성 및 단계별 상세 구현 규약 (Logic-First, Incremental Writing)
-- **python**: 파이썬 전용 Clean Architecture 기술 규약 (Dumb Controller, Strict Schema)
-- **sentinel**: 지휘 유닛 전용 자율 7단계 파이프라인 집행 및 품질 보증 규약
-- **swift**: SwiftUI 기반 iOS/macOS 네이티브 개발 및 타입 안정성 규약
+- **markdown**: Markdown Document Structural Integrity and Readability Protocol (Hierarchy, Literal Specification)
+- **planning**: Planning Document Consistency and Step-by-Step Implementation Protocol (Logic-First, Incremental Writing)
+- **python**: Python-Specific Clean Architecture Technical Protocol (Dumb Controller, Strict Schema)
+- **sentinel**: Command Unit Exclusive Autonomous 7-Step Pipeline Execution and Quality Assurance Protocol
+- **swift**: SwiftUI-based iOS/macOS Native Development and Type Safety Protocol
 
 ## 4. 핵심 프로토콜 (Global Core Protocols)
 오퍼레이터는 다음의 글로벌 규약을 절대적으로 준수합니다:
@@ -50,6 +53,7 @@
 - **P-6 (OAKS System Integration & Anti-Hallucination):** This project utilizes **OAKS (Operator AI Knowledge System)** to manage verified domain knowledge. When the user asks about unfamiliar golfzon/GDS terms, hardware APIs, or business contexts, **NEVER hallucinate or guess. You MUST first query the OAKS knowledge base (`operator knowledge query`)** or search the codebase directory to fetch verified facts before formulating your response.
 - **P-7 (OAKS Propose & Sync):** When you identify new technical findings, specifications, or debugging patterns, you must propose them to the OAKS proposal stage using `operator knowledge propose` and regularly refresh the verified AI directory map (`llms.txt`).
 - **P-8 (Anti-Speculative Logic):** Do not make up extremely low-probability, speculative hypothetical situations (e.g., system corruption, extreme network anomalies, or unproven edge cases) to force-fit a logical explanation. Always focus on verified high-probability code paths, concrete data states, and reproducible deterministic factors before making complex, unlikely assumptions.
+- **P-9 (Unit Integration & Synergy):** Always identify the characteristics of the available Specialized Units (e.g., `python`, `sentinel`, `swift`, `markdown`, `planning`) loaded in the current circuit. Actively leverage their specific protocols for specialized tasks, architectural decisions, and QA processes rather than relying solely on general knowledge.
 
 
 ## 5. 사용 가이드

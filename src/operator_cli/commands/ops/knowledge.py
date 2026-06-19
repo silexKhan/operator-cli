@@ -248,3 +248,42 @@ def doctor_knowledge(
     has_warnings = any(item["status"] == "WARN" for item in diagnostics)
     if has_failures or (strict and has_warnings):
         raise typer.Exit(1)
+
+@app.command(name="backup")
+def backup_knowledge(
+    output: str = typer.Option("knowledge_backup.zip", "--output", "-o", help="백업 파일을 저장할 경로 (예: backup.zip)")
+):
+    """
+    [bold cyan]지식 시스템 백업[/bold cyan]
+    OAKS 지식 저장소와 인덱스 파일(llms.txt 등)을 zip 파일로 압축하여 백업합니다.
+    """
+    from operator_cli.core.knowledge.manager import KnowledgeManager
+    import zipfile
+    from pathlib import Path
+    from operator_cli.core.utils import S_OK, S_ERR
+    
+    manager = KnowledgeManager(ensure_directories=False)
+    knowledge_dir = manager.base_path
+    index_files = [knowledge_dir.parent / "llms.txt", knowledge_dir.parent / "llms-full.txt"]
+    
+    out_path = Path(output)
+    
+    try:
+        with console.status(f"[bold green]Backing up knowledge to {out_path}...[/bold green]"):
+            with zipfile.ZipFile(out_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+                # 1. 지식 디렉토리 전체 백업
+                if knowledge_dir.exists():
+                    for file_path in knowledge_dir.rglob("*"):
+                        if file_path.is_file():
+                            arcname = file_path.relative_to(knowledge_dir.parent)
+                            zipf.write(file_path, arcname)
+                
+                # 2. 인덱스 파일 백업
+                for idx_file in index_files:
+                    if idx_file.exists():
+                        zipf.write(idx_file, idx_file.name)
+                        
+        console.print(f"[bold green]{S_OK} Backup completed successfully![/bold green] -> [dim]{out_path.absolute()}[/dim]")
+    except Exception as e:
+        console.print(f"[bold red]{S_ERR} Backup failed:[/bold red] {str(e)}")
+        raise typer.Exit(1)

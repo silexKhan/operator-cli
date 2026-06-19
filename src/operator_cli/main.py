@@ -29,6 +29,13 @@ def get_tree_str(items, color="gold1"):
         lines.append(f"      [bold {color}]{connector} {item}[/bold {color}]")
     return "\n".join(lines)
 
+BANNER = """[bold cyan] ██████╗ ██████╗ ███████╗██████╗  █████╗ ████████╗██████╗ ██████╗ 
+██╔═══██╗██╔══██╗██╔════╝██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗██╔══██╗
+██║   ██║██████╔╝█████╗  ██████╔╝███████║   ██║   ██║  ██║██████╔╝
+██║   ██║██╔═══╝ ██╔══╝  ██╔══██╗██╔══██║   ██║   ██║  ██║██╔══██╗
+╚██████╔╝██║     ███████╗██║  ██║██║  ██║   ██║   ██████╔╝██║  ██║
+ ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═════╝ ╚═╝  ╚═╝[/bold cyan]"""
+
 app = typer.Typer(
     name="operator",
     help="[bold blue]Operator CLI[/bold blue] - A lightweight agentic command line interface for context-aware AI operations.",
@@ -77,7 +84,8 @@ knowledge_items = [
     "propose     [grey50](Extract and propose new knowledge)[/grey50]",
     "approve     [grey50](Review and approve proposals)[/grey50]",
     "doctor      [grey50](Check OAKS store integrity)[/grey50]",
-    "refresh     [grey50](Refresh llms.txt index)[/grey50]"
+    "refresh     [grey50](Refresh llms.txt index)[/grey50]",
+    "backup      [grey50](Backup OAKS knowledge and indices to zip)[/grey50]"
 ]
 import operator_cli.commands.ops.knowledge as knowledge
 app.add_typer(
@@ -166,6 +174,13 @@ def main(
     [bold green]Welcome to Operator CLI.[/bold green]
     """
     pass
+
+# Entry point for console script
+import os
+if os.path.basename(sys.argv[0]) in ("operator", "operator.exe"):
+    if len(sys.argv) == 1 or (len(sys.argv) == 2 and sys.argv[1] in {"--help", "-h"}):
+        from rich.console import Console
+        Console().print(BANNER)
 
 if __name__ == "__main__":
     app()

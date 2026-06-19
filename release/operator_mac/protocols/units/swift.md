@@ -1,7 +1,11 @@
 ---
-description: "SwiftUI 기반 iOS/macOS 네이티브 개발 및 타입 안정성 규약"
+description: "SwiftUI-based iOS/macOS Native Development and Type Safety Protocol"
 ---
 # Unit: Swift (iOS/macOS Native)
-- **Protocol SW-1 (SwiftUI Focus):** 가급적 SwiftUI 프레임워크를 우선 사용한다.
-- **Protocol SW-2 (Type Safety):** 강력한 타입 체크를 통해 런타임 오류를 방지한다.
-- **Protocol SW-3 (No Force Unwrap):** 옵셔널 바인딩을 필수로 사용한다.
+- **Protocol SW-1 (SwiftUI Focus):** Prioritize using the SwiftUI framework whenever possible.
+- **Protocol SW-2 (Type Safety):** Prevent runtime errors through strong type checking.
+- **Protocol SW-3 (No Force Unwrap):** Optional binding (`if let`, `guard let`) is mandatory; forced unwrapping (`!`) is strictly prohibited.
+- **Protocol SW-4 (Architecture & State):** Adhere to the MVVM pattern and apply clear state management using `@State`, `@Binding`, `@EnvironmentObject`, etc.
+- **Protocol SW-5 (Modern Concurrency):** Utilize modern `async`/`await` and `Task` for asynchronous processing instead of the legacy GCD (DispatchQueue).
+- **Protocol SW-6 (Data Management):** When local data storage is required, consider the modern SwiftData standard first.
+- **Protocol SW-7 (CLI Build Verification):** After every code modification, you must immediately self-verify the absence of compilation errors by executing `xcodebuild` or `swift build` commands in the terminal environment.

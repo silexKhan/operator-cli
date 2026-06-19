@@ -1,9 +1,10 @@
 # OAKS Knowledge Library
 > Automated knowledge base for Operator CLI (OAKS Phase 3)
-> Updated: 2026-06-08 14:26:38
+> Updated: 2026-06-17 09:23:48
 
 ## Knowledge Entries
 
+- [Sub-agent Context Injection Strategy](knowledge/library/K-BCA88841.md): Category: library | Tags: delegation, local-llm, context-injection
 - [기술 아키텍처 및 개발 스타일 가이드라인](knowledge/library/K-AB26B796.md): Category: library | Tags: 아키텍처, 기술스택, 스타일가이드, 명령어, UIKit
 - [OAKS 기반 지식 관리 및 분석 전략](knowledge/library/K-9AF01FC4.md): Category: library | Tags: 전략, OAKS, 분석방법론, Anti-Hallucination
 - [핵심 운영 원칙 및 진실성 확보](knowledge/library/K-CDADB352.md): Category: library | Tags: 진실성, 보안, 제약사항

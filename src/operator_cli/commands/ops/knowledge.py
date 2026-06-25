@@ -175,13 +175,15 @@ def open_knowledge(
     [bold cyan]지식 원본 열기[/bold cyan]
     지식 ID에 해당하는 원본 마크다운 파일을 시스템 기본 편집기로 엽니다.
     """
-    from operator_cli.core.utils import get_project_root, S_ERR, S_INFO
-    root = get_project_root()
+    from operator_cli.core.knowledge.manager import KnowledgeManager
+    from operator_cli.core.utils import S_ERR, S_INFO
+    
+    manager = KnowledgeManager(ensure_directories=False)
     
     # library와 proposals 폴더 모두 탐색
     potential_paths = [
-        root / "knowledge" / "library" / f"{knowledge_id}.md",
-        root / "knowledge" / "proposals" / f"{knowledge_id}.md"
+        manager.get_knowledge_path("library", f"{knowledge_id}.md"),
+        manager.get_knowledge_path("proposals", f"{knowledge_id}.md")
     ]
     
     target_path = None

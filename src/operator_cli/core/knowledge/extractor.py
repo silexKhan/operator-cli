@@ -16,11 +16,18 @@ KNOWLEDGE_EXTRACTION_PROMPT = """
 2. Preference: 사용자의 선호 스타일, 팀의 코딩 규약 등.
 3. Strategy: 특정 문제 해결 방법론, 아키텍처 결정 등.
 
+[중요 지침]
+- "content" 항목을 작성할 때 **절대 짧게 요약하지 마십시오.**
+- 원본 텍스트에 포함된 구체적인 수치, 이유, 로직, 코드 예시, 표 등을 모두 살려서 **최대한 길고 상세한 Markdown 문서**로 작성해야 합니다.
+- **[JSON 이스케이프 주의]** Markdown 내부의 줄바꿈은 반드시 `\\n` 으로 이스케이프 해야 합니다. 백슬래시 자체를 출력할 때는 `\\\\` 로 이스케이프해야 파싱 에러(Invalid escape)가 발생하지 않습니다.
+- **절대 대화형 응답(예: "추출한 지식은 다음과 같습니다")을 포함하지 마십시오.**
+- 오직 유효한 JSON 배열만 출력해야 합니다.
+
 출력 형식은 반드시 아래의 JSON 리스트 형식이어야 합니다:
 [
   {
     "title": "지식의 간결한 제목",
-    "content": "Markdown 형식의 상세 지식 내용",
+    "content": "Markdown 형식의 매우 상세하고 구체적인 지식 내용",
     "tags": ["태그1", "태그2"],
     "category": "proposals"
   }
@@ -70,12 +77,37 @@ class KnowledgeExtractor:
             clean_response = response.strip()
             if clean_response.startswith("```json"):
                 clean_response = clean_response[7:]
+            elif clean_response.startswith("```"):
+                clean_response = clean_response[3:]
+                
             if clean_response.endswith("```"):
                 clean_response = clean_response[:-3]
             
-            extracted = json.loads(clean_response)
+            # 정규식으로 리스트 구조만 강제 추출 시도
+            import re
+            match = re.search(r'\[.*\]', clean_response, re.DOTALL)
+            if match:
+                clean_response = match.group(0)
+                
+            # LLM의 잘못된 제어 문자 이스케이프 강제 변환
+            clean_response = clean_response.replace('\n', '\\n').replace('\r', '').replace('\t', '\\t')
+            # 불필요하게 이스케이프된 백슬래시 처리 (이미 문자열 내부에 있는 단일 백슬래시들을 이중으로 처리해버림 방지용이 아니라 파서 보호)
+            clean_response = re.sub(r'(?<!\\)\\([^\/"bfnrtu\\])', r'\\\\\1', clean_response)
+            
+            import ast
+            try:
+                extracted = json.loads(clean_response)
+            except json.JSONDecodeError:
+                # LLM이 파이썬 문자열처럼 반환했을 경우의 최후의 수단
+                try:
+                    extracted = ast.literal_eval(clean_response)
+                except Exception:
+                    # 제어 문자 제거 후 재시도
+                    clean_response = re.sub(r'[\x00-\x1f\x7f-\x9f]', '', clean_response)
+                    extracted = json.loads(clean_response)
+
             return extracted if isinstance(extracted, list) else []
-        except (json.JSONDecodeError, Exception):
+        except Exception as e:
             # 추출 실패 시 빈 리스트 반환
             return []
 
